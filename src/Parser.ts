@@ -17,9 +17,9 @@ const
 	destructingImportTokenRegex = new RegExp(destructingImportToken);
 
 const parseDestructiveImports = (destructiveImports) => {
-	// if (!destructiveImports) {
-	// 	return null;
-	// }
+	if (!destructiveImports) {
+		return null;
+	}
 
 	return (destructiveImports.toString())
 		.split(',')
@@ -46,7 +46,7 @@ export const parseImportNodes = (source: string): Array<IParsedNode> => {
 		imports.push({
 			default: match[ParsedGroup.DefaultImport],
 			hasTypeKeyword: match[ParsedGroup.TypeKeyword],
-			namedImports:  parseDestructiveImports(7 || 20),// parseDestructiveImports(ParsedGroup.DestructingImportGroup),
+			namedImports: parseDestructiveImports(match[ParsedGroup.DestructingImportGroup]),
 			namespace: match[ParsedGroup.NamespaceImport],
 			path: match[ParsedGroup.FilePath],
 			range: {

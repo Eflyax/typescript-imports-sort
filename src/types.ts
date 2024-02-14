@@ -1,6 +1,3 @@
-/**
- * TODO
- */
 export interface IParsedNode {
 	default: string | undefined,
 	hasTypeKeyword: string | undefined,
