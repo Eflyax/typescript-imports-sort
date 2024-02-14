@@ -1,4 +1,4 @@
-import {parseImportNodes} from './core/sort/parse-import-nodes';
+import {parseImportNodes} from './Parser';
 import fs from 'fs';
 
 const
@@ -8,5 +8,3 @@ const
 for (const node of nodes) {
 	console.log(node);
 }
-
-// npx ts-node src/index.ts

@@ -1,11 +1,13 @@
+import {IParsedNode} from './types';
+
 export class NodeWriter {
 
 	constructor() {
 
 	}
 
-	getTexToutput(node): string {
-		return '';
+	nodeToString(node: IParsedNode): string {
+		return JSON.stringify(node);
 	}
 
 }
