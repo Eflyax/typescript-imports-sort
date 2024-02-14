@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  eflyax-tis:
+    container_name: "eflyax-tis"
+    image: "node:18.17-alpine"
+    ports:
+      - 3000:3000
+    working_dir: '/var/www/html'
+    volumes:
+      - ./:/var/www/html
+    stdin_open: true

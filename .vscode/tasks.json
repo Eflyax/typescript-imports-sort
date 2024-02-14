@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [{
+		"label": "$(play)Start",
+		"type": "shell",
+		"command": "docker start eflyax-tis && docker exec -ti eflyax-tis sh",
+		"options": {
+			"statusbar": {
+				"color": "#45f300"
+			}
+		}
+	},{
+		"label": "$(repo-sync) (Re)install docker container",
+		"type": "shell",
+		"command": "docker kill eflyax-tis || true && docker rm eflyax-tis || true && docker-compose up -d && docker exec -ti eflyax-tis sh yarn install",
+		"options": {
+			"statusbar": {
+				"color": "#ff8800"
+			}
+		}
+	}]
+}

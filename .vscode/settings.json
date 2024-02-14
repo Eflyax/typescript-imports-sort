@@ -1,0 +1,16 @@
+{
+	"files.exclude": {
+			"out": false // set this to true to hide the "out" folder with the compiled JS files
+	},
+	"search.exclude": {
+			"out": true // set this to false to include "out" folder in search results
+	},
+	"workbench.colorCustomizations": {
+		"tab.activeBorder": "#ec5dff",
+		"activityBar.background": "#252271",
+		"titleBar.activeBackground": "#332F9E",
+		"titleBar.activeForeground": "#FBFBFE"
+	},
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": false
+}

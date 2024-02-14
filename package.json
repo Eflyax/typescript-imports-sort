@@ -1,0 +1,37 @@
+{
+  "name": "typescript-imports-sort",
+  "displayName": "Typescript Imports Sort",
+  "description": "Sorts import statements in Typescript code",
+  "version": "0.0.1",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.66.0"
+  },
+  "categories": [
+    "Formatters"
+  ],
+  "keywords": [
+    "Typescript",
+    "imports",
+    "sort",
+    "import statements",
+    "import clauses"
+  ],
+  "scripts": {
+  },
+  "devDependencies": {
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^6.14.13",
+    "@types/vscode": "^1.32.0",
+    "glob": "^7.1.7",
+    "mocha": "^4.1.0",
+    "tslint": "^5.11.0",
+    "typescript": "^4.2.2",
+    "vsce": "^2.11.0",
+    "vscode-test": "^1.3.0"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.2"
+  }
+}
