@@ -2,12 +2,17 @@ export interface IParsedNode {
 	default: string | undefined,
 	hasTypeKeyword: string | undefined,
 	namedImports: [],
-	namespace: string
+	namespace: string | undefined;
 	path: string
 	range: {
 		index: number,
 		lastIndex: number
 	}
+}
+
+export interface INamedImport {
+	alias: string | undefined;
+	importName: string;
 }
 
 export enum ParsedGroup {

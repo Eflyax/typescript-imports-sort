@@ -1,5 +1,5 @@
 import {ParsedGroup} from './types';
-import type {IParsedNode} from './types';
+import type {INamedImport, IParsedNode} from './types';
 
 export class Parser {
 
@@ -10,12 +10,12 @@ export class Parser {
 		this.initRegex();
 	}
 
-	parseDestructiveImports = (destructiveImports) => {
+	parseDestructiveImports = (destructiveImports: string): Array<INamedImport> => {
 		if (!destructiveImports) {
 			return null;
 		}
 
-		return (destructiveImports.toString())
+		return (destructiveImports)
 			.split(',')
 			.map((destructiveImport) => {
 				const match =
