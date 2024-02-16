@@ -22,6 +22,7 @@ export class Sorter {
 			}
 			else if (node.namedImports) {
 				nodeGroups[ParsedNodeGroup.WithNamedImport].push(node);
+				nodeGroups[ParsedNodeGroup.WithNamedImport].sort(this.compareNodesWithNamedImports);
 			}
 			else if (node.default) {
 				nodeGroups[ParsedNodeGroup.WithDefaultImport].push(node);
@@ -41,6 +42,22 @@ export class Sorter {
 		}
 
 		return result;
+	}
+
+	compareNodesWithNamedImports(objectA: IParsedNode, objectB: IParsedNode): number {
+		function chainNamedImports(namedImports: Array<INamedImport>): string {
+			let result = '';
+
+			namedImports.forEach((namedImport: INamedImport) => result += namedImport.importName);
+
+			return result;
+		}
+
+		const
+			importNameA = chainNamedImports(objectA.namedImports).toUpperCase(),
+			importNameB = chainNamedImports(objectB.namedImports).toUpperCase();
+
+		return (importNameA < importNameB) ? -1 : (importNameA > importNameB) ? 1 : 0;
 	}
 
 	compareNodesWithDefaultImport(objectA: IParsedNode, objectB: IParsedNode): number {
