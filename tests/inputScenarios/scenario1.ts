@@ -14,10 +14,3 @@ import {
 	NButton,
 	NFormItem
 } from 'naive-ui';
-
-/**
- * 1) node.namedImports + alphabet		=> import { options } from './core/options/index';
- * 2) node.default + alphabet 				=> import vue from 'vue';
- * 3) node.namedImports === null			=> import * as vscode from 'vscode';
- * 4) node.hasTypeKeyword === true		=> import type {IFoo, IBar} from '@/types';
- */

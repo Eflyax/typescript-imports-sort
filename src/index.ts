@@ -1,10 +1,7 @@
-import {parseImportNodes} from './Parser';
-import fs from 'fs';
+import {Parser} from './core/Parser';
 
 const
-	fileInput = fs.readFileSync(__dirname + '/input.ts', 'utf-8'),
-	nodes = parseImportNodes(fileInput);
+	parser = new Parser(),
+	output = parser.getOutputForSourceFile(__dirname + '/input.ts');
 
-for (const node of nodes) {
-	console.log(node);
-}
+console.log(output);
