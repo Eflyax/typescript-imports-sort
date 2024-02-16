@@ -15,7 +15,8 @@
 		"import clauses"
 	],
 	"scripts": {
-		"dev": "ts-node src/index.ts"
+		"dev": "ts-node src/index.ts",
+		"test": "vitest run"
 	},
 	"devDependencies": {
 		"@types/node": "^6.14.13",
@@ -23,6 +24,7 @@
 		"typescript": "^4.2.2"
 	},
 	"dependencies": {
-		"ts-node": "^10.9.2"
+		"ts-node": "^10.9.2",
+		"vitest": "^1.2.2"
 	}
 }

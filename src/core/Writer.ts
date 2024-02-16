@@ -54,6 +54,8 @@ export class Writer {
 			result += Literal.Semicolon;
 		}
 
+		result += '\n';
+
 		return result;
 	}
 

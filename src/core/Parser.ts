@@ -1,6 +1,8 @@
 import {config} from '../config';
 import {ParsedGroup} from '../types';
 import {Sorter} from './Sorter';
+import {Writer} from './Writer';
+import fs from 'fs';
 import type {INamedImport, IParsedNode} from '../types';
 
 export class Parser {
@@ -8,10 +10,12 @@ export class Parser {
 	private destructingImportTokenRegex: RegExp;
 	private importRegex: RegExp;
 	private sorter: Sorter;
+	private writer: Writer;
 
 	constructor() {
 		this.initRegex();
 		this.sorter = new Sorter();
+		this.writer = new Writer();
 	}
 
 	parseDestructiveImports = (destructiveImports: string): Array<INamedImport> => {
@@ -81,6 +85,20 @@ export class Parser {
 
 			this.importRegex = new RegExp(importRegexString, 'gm');
 			this.destructingImportTokenRegex = new RegExp(destructingImportToken);
+	}
+
+	getOutputForSourceFile(filePath: string): string {
+		const
+			fileInput = fs.readFileSync(filePath, 'utf-8'),
+			nodes = this.parseImportNodes(fileInput);
+
+		let result = '';
+
+		for (const node of nodes) {
+			result += this.writer.parsedNodeToString(node);
+		}
+
+		return result;
 	}
 
 }
