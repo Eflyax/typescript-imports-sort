@@ -1,4 +1,3 @@
-import {parse} from 'url';
 import {INamedImport, IParsedNode, ParsedNodeGroup} from '../types';
 
 export class Sorter {
@@ -19,6 +18,7 @@ export class Sorter {
 
 			if (node.hasTypeKeyword) {
 				nodeGroups[ParsedNodeGroup.WithTypeKeyword].push(node);
+				nodeGroups[ParsedNodeGroup.WithTypeKeyword].sort(this.compareNodesWithTypeKeyword);
 			}
 			else if (node.namedImports) {
 				nodeGroups[ParsedNodeGroup.WithNamedImport].push(node);
@@ -27,11 +27,9 @@ export class Sorter {
 				nodeGroups[ParsedNodeGroup.WithDefaultImport].push(node);
 			}
 			else {
-				// todo - sort node.namedImports (alias / importName ?)
 				nodeGroups[ParsedNodeGroup.WithoutNamedImport].push(node);
 			}
 		});
-
 		let
 			result = [];
 
@@ -42,6 +40,14 @@ export class Sorter {
 		}
 
 		return result;
+	}
+
+	compareNodesWithTypeKeyword(objectA: IParsedNode, objectB: IParsedNode): number {
+		const
+			namedImportsA = objectA.namedImports?.length ? 1 : 0,
+			namedImportsB = objectB.namedImports?.length ? 1 : 0;
+
+		return (namedImportsA < namedImportsB) ? 1 : (namedImportsA > namedImportsB) ? -1 : 0;
 	}
 
 	compareNamedImports(objectA: INamedImport, objectB: INamedImport): number {
