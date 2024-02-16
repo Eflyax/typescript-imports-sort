@@ -5,7 +5,13 @@ import vue from 'vue';
 import { isSupportedLanguage as supLang } from './core/util/index';
 import type {IFoo, IBar} from '@/types';
 import type IRequest from '@/node-types';
-
+import {
+	NButton,
+	NCheckbox,
+	NForm,
+	NFormItem,
+	NInput
+} from 'naive-ui';
 /**
  * 1) node.namedImports + alphabet		=> import { options } from './core/options/index';
  * 2) node.default + alphabet 				=> import vue from 'vue';

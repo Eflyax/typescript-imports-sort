@@ -7,7 +7,8 @@ export interface IParsedNode {
 	range: {
 		index: number,
 		lastIndex: number
-	}
+	},
+	multilineImport: boolean;
 }
 
 export interface INamedImport {
@@ -27,12 +28,13 @@ export enum ParsedGroup {
 }
 
 export enum Literal {
-	AllAs = '* as',
+	All = '*',
+	As = 'as',
+	BracketClose = '}',
+	BracketOpen = '{',
 	From = 'from',
 	Import = 'import',
+	ImportSeparator = ',',
 	Semicolon = ';',
-	Type = 'type',
-	BracketOpen = '{',
-	BracketClose = '}',
-	ImportSeparator = ','
+	Type = 'type'
 }

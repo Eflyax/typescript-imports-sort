@@ -1,3 +1,4 @@
+import {config} from './config';
 import {ParsedGroup} from './types';
 import type {INamedImport, IParsedNode} from './types';
 
@@ -53,7 +54,8 @@ export class Parser {
 				range: {
 					index: match.index,
 					lastIndex: this.importRegex.lastIndex
-				}
+				},
+				multilineImport: config.multilinePaths.includes(match[ParsedGroup.FilePath])
 			});
 		}
 
