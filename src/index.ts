@@ -9,6 +9,6 @@ const
 	nodes = parser.parseImportNodes(fileInput);
 
 for (const node of nodes) {
-	// console.log(node);
+	console.log(node);
 	console.log(writer.parsedNodeToString(node));
 }

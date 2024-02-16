@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { options } from './core/options/index';
-import { sortInsideEditor, sortOnSave } from './core/sort/index';
+import {options, aaa, ZOptions, AOptions} from './core/options/index';
+import {sortZ, sortInsideEditor, sortOnSave} from './core/sort/index';
 import vue from 'vue';
-import { isSupportedLanguage as supLang } from './core/util/index';
+import {isSupportedLanguage as supLang} from './core/util/index';
 import type {IFoo, IBar} from '@/types';
 import type IRequest from '@/node-types';
 import {
@@ -12,6 +12,7 @@ import {
 	NButton,
 	NFormItem
 } from 'naive-ui';
+
 /**
  * 1) node.namedImports + alphabet		=> import { options } from './core/options/index';
  * 2) node.default + alphabet 				=> import vue from 'vue';

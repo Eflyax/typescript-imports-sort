@@ -1,5 +1,5 @@
 import {parse} from 'url';
-import {IParsedNode, ParsedNodeGroup} from '../types';
+import {INamedImport, IParsedNode, ParsedNodeGroup} from '../types';
 
 export class Sorter {
 
@@ -9,15 +9,18 @@ export class Sorter {
 				[ParsedNodeGroup.WithNamedImport]: [],
 				[ParsedNodeGroup.WithDefaultImport]: [],
 				[ParsedNodeGroup.WithoutNamedImport]: [],
-				[ParsedNodeGroup.WithTypeKeyword]: [],
+				[ParsedNodeGroup.WithTypeKeyword]: []
 			}
 
 		nodes.forEach((node: IParsedNode) => {
+			if (node.namedImports) {
+				node.namedImports.sort(this.compareNamedImports);
+			}
+
 			if (node.hasTypeKeyword) {
 				nodeGroups[ParsedNodeGroup.WithTypeKeyword].push(node);
 			}
 			else if (node.namedImports) {
-				// todo - sort node.namedImports
 				nodeGroups[ParsedNodeGroup.WithNamedImport].push(node);
 			}
 			else if (node.default) {
@@ -29,7 +32,8 @@ export class Sorter {
 			}
 		});
 
-		let result = [];
+		let
+			result = [];
 
 		for (const key in nodeGroups) {
 			nodeGroups[key].forEach((parsedNode: IParsedNode) => {
@@ -38,6 +42,14 @@ export class Sorter {
 		}
 
 		return result;
+	}
+
+	compareNamedImports(objectA: INamedImport, objectB: INamedImport): number {
+		const
+			importNameA = objectA.importName.toUpperCase(),
+			importNameB = objectB.importName.toUpperCase();
+
+		return (importNameA < importNameB) ? -1 : (importNameA > importNameB) ? 1 : 0;
 	}
 
 }
