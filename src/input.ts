@@ -6,11 +6,11 @@ import { isSupportedLanguage as supLang } from './core/util/index';
 import type {IFoo, IBar} from '@/types';
 import type IRequest from '@/node-types';
 import {
-	NButton,
+	NInput,
 	NCheckbox,
 	NForm,
-	NFormItem,
-	NInput
+	NButton,
+	NFormItem
 } from 'naive-ui';
 /**
  * 1) node.namedImports + alphabet		=> import { options } from './core/options/index';

@@ -1,3 +1,4 @@
+import {parse} from 'url';
 import {IParsedNode, ParsedNodeGroup} from '../types';
 
 export class Sorter {
@@ -28,21 +29,15 @@ export class Sorter {
 			}
 		});
 
-		console.log(nodeGroups);
+		let result = [];
 
+		for (const key in nodeGroups) {
+			nodeGroups[key].forEach((parsedNode: IParsedNode) => {
+				result.push(parsedNode);
+			});
+		}
 
-		// function compare( a, b ) {
-		// 	if ( a.last_nom < b.last_nom ){
-		// 		return -1;
-		// 	}
-		// 	if ( a.last_nom > b.last_nom ){
-		// 		return 1;
-		// 	}
-		// 	return 0;
-		// }
-		// objs.sort( compare );
-
-		return nodes;
+		return result;
 	}
 
 }
