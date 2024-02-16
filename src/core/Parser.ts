@@ -1,14 +1,17 @@
-import {config} from './config';
-import {ParsedGroup} from './types';
-import type {INamedImport, IParsedNode} from './types';
+import {config} from '../config';
+import {ParsedGroup} from '../types';
+import {Sorter} from './Sorter';
+import type {INamedImport, IParsedNode} from '../types';
 
 export class Parser {
 
 	private destructingImportTokenRegex: RegExp;
 	private importRegex: RegExp;
+	private sorter: Sorter;
 
 	constructor() {
 		this.initRegex();
+		this.sorter = new Sorter();
 	}
 
 	parseDestructiveImports = (destructiveImports: string): Array<INamedImport> => {
@@ -59,7 +62,7 @@ export class Parser {
 			});
 		}
 
-		return imports;
+		return this.sorter.sortNodes(imports);
 	};
 
 	initRegex(): void {

@@ -1,5 +1,5 @@
-import {Parser} from './Parser';
-import {Writer} from './Writer';
+import {Parser} from './core/Parser';
+import {Writer} from './core/Writer';
 import fs from 'fs';
 
 const
@@ -9,8 +9,6 @@ const
 	nodes = parser.parseImportNodes(fileInput);
 
 for (const node of nodes) {
-	// console.log('');
 	// console.log(node);
 	console.log(writer.parsedNodeToString(node));
-	// console.log('');
 }

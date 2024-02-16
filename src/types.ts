@@ -1,7 +1,7 @@
 export interface IParsedNode {
 	default: string | undefined,
 	hasTypeKeyword: string | undefined,
-	namedImports: [],
+	namedImports: Array<INamedImport>,
 	namespace: string | undefined;
 	path: string
 	range: {
@@ -37,4 +37,11 @@ export enum Literal {
 	ImportSeparator = ',',
 	Semicolon = ';',
 	Type = 'type'
+}
+
+export enum ParsedNodeGroup {
+	WithDefaultImport = 'withDefaultImport',
+	WithNamedImport = 'withNamedImport',
+	WithoutNamedImport = 'withoutNamedImport',
+	WithTypeKeyword = 'withTypeKeyword'
 }

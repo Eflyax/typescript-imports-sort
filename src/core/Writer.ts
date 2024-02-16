@@ -1,6 +1,6 @@
-import {config} from './config';
-import {Literal} from './types';
-import type {INamedImport, IParsedNode} from './types';
+import {config} from '../config';
+import {Literal} from '../types';
+import type {INamedImport, IParsedNode} from '../types';
 
 export class Writer {
 
