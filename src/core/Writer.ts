@@ -38,7 +38,7 @@ export class Writer {
 				}
 
 				if (index < lenghtOfNamedImports - 1) {
-					result += `${Literal.ImportSeparator} `;
+					result += `${Literal.ImportSeparator}${parsedNode.multilineImport ? '' : ' '}`;
 				}
 
 				if (parsedNode.multilineImport) {
