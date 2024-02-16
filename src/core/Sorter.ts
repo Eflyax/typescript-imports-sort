@@ -30,6 +30,7 @@ export class Sorter {
 			}
 			else {
 				nodeGroups[ParsedNodeGroup.WithoutNamedImport].push(node);
+				nodeGroups[ParsedNodeGroup.WithoutNamedImport].sort(this.compareNodesWithoutNamedImport)
 			}
 		});
 		let
@@ -56,6 +57,14 @@ export class Sorter {
 		const
 			importNameA = chainNamedImports(objectA.namedImports).toUpperCase(),
 			importNameB = chainNamedImports(objectB.namedImports).toUpperCase();
+
+		return (importNameA < importNameB) ? -1 : (importNameA > importNameB) ? 1 : 0;
+	}
+
+	compareNodesWithoutNamedImport(objectA: IParsedNode, objectB: IParsedNode): number {
+		const
+			importNameA = objectA.namespace.toUpperCase(),
+			importNameB = objectB.namespace.toUpperCase();
 
 		return (importNameA < importNameB) ? -1 : (importNameA > importNameB) ? 1 : 0;
 	}
