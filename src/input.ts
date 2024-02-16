@@ -4,6 +4,7 @@ import { sortInsideEditor, sortOnSave } from './core/sort/index';
 import vue from 'vue';
 import { isSupportedLanguage as supLang } from './core/util/index';
 import type {IFoo, IBar} from '@/types';
+import type IRequest from '@/node-types';
 
 /**
  * 1) node.namedImports + alphabet		=> import { options } from './core/options/index';

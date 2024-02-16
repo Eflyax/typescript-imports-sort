@@ -25,3 +25,11 @@ export enum ParsedGroup {
 	NamespaceImport = 4,
 	TypeKeyword = 1
 }
+
+export enum Literal {
+	AllAs = '* as',
+	From = 'from',
+	Import = 'import',
+	Semicolon = ';',
+	Type = 'type'
+}

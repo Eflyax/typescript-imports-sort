@@ -1,26 +1,28 @@
 {
-  "name": "typescript-imports-sort",
-  "displayName": "Typescript Imports Sort",
-  "description": "Very specific typescript import sorter",
-  "version": "0.0.1",
-  "license": "MIT",
-  "categories": [
-    "Formatters"
-  ],
-  "keywords": [
-    "Typescript",
-    "imports",
-    "sort",
-    "import statements",
-    "import clauses"
-  ],
-  "scripts": {},
-  "devDependencies": {
-    "@types/node": "^6.14.13",
-    "tslint": "^5.11.0",
-    "typescript": "^4.2.2"
-  },
-  "dependencies": {
-    "ts-node": "^10.9.2"
-  }
+	"name": "typescript-imports-sort",
+	"displayName": "Typescript Imports Sort",
+	"description": "Very specific typescript import sorter",
+	"version": "0.0.1",
+	"license": "MIT",
+	"categories": [
+		"Formatters"
+	],
+	"keywords": [
+		"Typescript",
+		"imports",
+		"sort",
+		"import statements",
+		"import clauses"
+	],
+	"scripts": {
+		"dev": "ts-node src/index.ts"
+	},
+	"devDependencies": {
+		"@types/node": "^6.14.13",
+		"tslint": "^5.11.0",
+		"typescript": "^4.2.2"
+	},
+	"dependencies": {
+		"ts-node": "^10.9.2"
+	}
 }
