@@ -25,6 +25,7 @@ export class Sorter {
 			}
 			else if (node.default) {
 				nodeGroups[ParsedNodeGroup.WithDefaultImport].push(node);
+				nodeGroups[ParsedNodeGroup.WithDefaultImport].sort(this.compareNodesWithDefaultImport);
 			}
 			else {
 				nodeGroups[ParsedNodeGroup.WithoutNamedImport].push(node);
@@ -40,6 +41,14 @@ export class Sorter {
 		}
 
 		return result;
+	}
+
+	compareNodesWithDefaultImport(objectA: IParsedNode, objectB: IParsedNode): number {
+		const
+			importNameA = objectA.default.toUpperCase(),
+			importNameB = objectB.default.toUpperCase();
+
+		return (importNameA < importNameB) ? -1 : (importNameA > importNameB) ? 1 : 0;
 	}
 
 	compareNodesWithTypeKeyword(objectA: IParsedNode, objectB: IParsedNode): number {
