@@ -1,6 +1,6 @@
 import {Literal} from './types';
 import {config} from './config';
-import type {IParsedNode} from './types';
+import type {INamedImport, IParsedNode} from './types';
 
 export class Writer {
 
@@ -18,7 +18,18 @@ export class Writer {
 			result += `${Literal.AllAs} ${parsedNode.namespace}`;
 		}
 		else {
-			// result +=
+			const
+				lenghtOfNamedImports = parsedNode.namedImports.length;
+
+			result += Literal.BracketOpen;
+			parsedNode.namedImports.forEach((namedImport: INamedImport, index: number) => {
+				result += namedImport.importName;
+
+				if (index < lenghtOfNamedImports - 1) {
+					result += `${Literal.ImportSeparator} `;
+				}
+			});
+			result += Literal.BracketClose;
 		}
 
 		result += ` ${Literal.From} ${config.QuoteSymbol}${parsedNode.path}${config.QuoteSymbol}`;

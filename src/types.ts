@@ -31,5 +31,8 @@ export enum Literal {
 	From = 'from',
 	Import = 'import',
 	Semicolon = ';',
-	Type = 'type'
+	Type = 'type',
+	BracketOpen = '{',
+	BracketClose = '}',
+	ImportSeparator = ','
 }
