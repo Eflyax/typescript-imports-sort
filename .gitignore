@@ -1,7 +1,6 @@
-
-out
+.DS_Store
+.tmp
+.vscode-test
 node_modules
 npm-debug.log
-*.vsix
-.DS_Store
-.vscode-test
+out
