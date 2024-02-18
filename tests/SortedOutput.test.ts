@@ -3,9 +3,9 @@ import {Parser} from '../src/core/Parser';
 import fs from 'fs';
 
 const
-	getPathToScenarioFile = (id: number,): string => `${__dirname}/inputScenarios/scenario${id}.ts`,
-	loadExpectedOutput = (id: number): string => {
-		return fs.readFileSync(`${__dirname}/outputScenarios/scenario${id}.ts`, 'utf-8');
+	getPathToScenarioFile = (id: number, extension = 'ts'): string => `${__dirname}/inputScenarios/scenario${id}.${extension}`,
+	loadExpectedOutput = (id: number, extension = 'ts'): string => {
+		return fs.readFileSync(`${__dirname}/outputScenarios/scenario${id}.${extension}`, 'utf-8');
 	};
 
 describe('Compare sorted output', () => {
@@ -31,6 +31,14 @@ describe('Compare sorted output', () => {
 
 		expect(parser.getOutputForSourceFile(getPathToScenarioFile(3)))
 			.toBe(loadExpectedOutput(3));
+	});
+
+	test('Scenario #4 - Vue SFC', () => {
+		const
+			parser = new Parser();
+
+		expect(parser.getOutputForSourceFile(getPathToScenarioFile(4, 'vue')))
+			.toBe(loadExpectedOutput(4, 'vue'));
 	});
 
 });
