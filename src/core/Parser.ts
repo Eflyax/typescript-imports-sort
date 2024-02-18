@@ -3,7 +3,6 @@ import {ParsedGroup} from '../types';
 import {ParsedNode} from './ParsedNode';
 import {Sorter} from './Sorter';
 import {Writer} from './Writer';
-import fs from 'fs';
 import type {INamedImport, IParsedNode} from '../types';
 
 export class Parser {
@@ -116,10 +115,9 @@ export class Parser {
 			this.destructingImportTokenRegex = new RegExp(destructingImportToken);
 	}
 
-	getOutputForSourceFile(filePath: string): string {
+	getOutputForSource(source: string): string {
 		const
-			fileInput = fs.readFileSync(filePath, 'utf-8'),
-			nodes = this.parseImportNodes(fileInput);
+			nodes = this.parseImportNodes(source);
 
 		let
 			sortedNodes = '';
@@ -129,8 +127,8 @@ export class Parser {
 		}
 
 		const
-			contentBeforeImports = fileInput.slice(0, this.parsedRange.from),
-			contentAfterImports = fileInput.slice(this.parsedRange.to, fileInput.length);
+			contentBeforeImports = source.slice(0, this.parsedRange.from),
+			contentAfterImports = source.slice(this.parsedRange.to, source.length);
 
 		return contentBeforeImports + sortedNodes + contentAfterImports;
 	}
