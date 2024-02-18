@@ -1,3 +1,8 @@
+export enum Sex {
+	M = 'man',
+	W = 'woman'
+ }
+
 import * as vscode from 'vscode';
 import {options, aaa, ZOptions, AOptions} from './core/options/index';
 import {sortZ, sortInsideEditor, sortOnSave} from './core/sort/index';
@@ -14,3 +19,11 @@ import {
 	NButton,
 	NFormItem
 } from 'naive-ui';
+
+const
+	MIN = 0,
+	MAX = 100;
+
+export class Scenario1 {
+	// some code
+}

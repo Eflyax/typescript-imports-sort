@@ -1,5 +1,6 @@
 import {config} from '../config';
 import {ParsedGroup} from '../types';
+import {ParsedNode} from './ParsedNode';
 import {Sorter} from './Sorter';
 import {Writer} from './Writer';
 import fs from 'fs';
@@ -11,6 +12,11 @@ export class Parser {
 	private importRegex: RegExp;
 	private sorter: Sorter;
 	private writer: Writer;
+	private parsedRange = {
+		from: 0,
+		to: 0
+	};
+	private parsedNodes: Record<string, IParsedNode> = {};
 
 	constructor() {
 		this.initRegex();
@@ -42,28 +48,51 @@ export class Parser {
 	parseImportNodes = (source: string): Array<IParsedNode> => {
 		this.importRegex.lastIndex = 0;
 
-		const
-			imports = [];
-
 		if (/(disable-sort-imports)/g.test(source)) {
 			return [];
 		}
 
-		let match;
+		let
+			match, minParsedRange = source.length, maxParsedRange = 0;
 
 		while ((match =  this.importRegex.exec(source))) {
-			imports.push({
-				default: match[ParsedGroup.DefaultImport],
-				hasTypeKeyword: match[ParsedGroup.TypeKeyword],
-				namedImports: this.parseDestructiveImports(match[ParsedGroup.DestructingImportGroup]),
-				namespace: match[ParsedGroup.NamespaceImport],
-				path: match[ParsedGroup.FilePath],
-				range: {
-					index: match.index,
-					lastIndex: this.importRegex.lastIndex
-				},
-				multilineImport: config.multilinePaths.includes(match[ParsedGroup.FilePath])
-			});
+			const
+				parsedNode = new ParsedNode();
+
+			parsedNode.default = match[ParsedGroup.DefaultImport];
+			parsedNode.hasTypeKeyword = !!match[ParsedGroup.TypeKeyword];
+			parsedNode.namedImports = this.parseDestructiveImports(match[ParsedGroup.DestructingImportGroup]);
+			parsedNode.namespace = match[ParsedGroup.NamespaceImport];
+			parsedNode.path = match[ParsedGroup.FilePath];
+			parsedNode.multilineImport = config.multilinePaths.includes(match[ParsedGroup.FilePath]);
+
+			const
+				nodeKey = parsedNode.getKeyByImportPath();
+
+			if (this.parsedNodes[nodeKey]) {
+				this.parsedNodes[nodeKey].namedImports = [].concat(this.parsedNodes[nodeKey].namedImports, parsedNode.namedImports);
+			}
+			else {
+				this.parsedNodes[nodeKey] = parsedNode;
+			}
+
+			if (match.index < minParsedRange) {
+				minParsedRange = match.index;
+			}
+
+			if (this.importRegex.lastIndex > maxParsedRange) {
+				maxParsedRange = this.importRegex.lastIndex;
+			}
+		}
+
+		this.parsedRange.from = minParsedRange;
+		this.parsedRange.to = maxParsedRange;
+
+		const
+			imports = [];
+
+		for (const key in this.parsedNodes) {
+			imports.push(this.parsedNodes[key]);
 		}
 
 		return this.sorter.sortNodes(imports);
@@ -92,13 +121,18 @@ export class Parser {
 			fileInput = fs.readFileSync(filePath, 'utf-8'),
 			nodes = this.parseImportNodes(fileInput);
 
-		let result = '';
+		let
+			sortedNodes = '';
 
 		for (const node of nodes) {
-			result += this.writer.parsedNodeToString(node);
+			sortedNodes += this.writer.parsedNodeToString(node);
 		}
 
-		return result;
+		const
+			contentBeforeImports = fileInput.slice(0, this.parsedRange.from),
+			contentAfterImports = fileInput.slice(this.parsedRange.to, fileInput.length);
+
+		return contentBeforeImports + sortedNodes + contentAfterImports;
 	}
 
 }

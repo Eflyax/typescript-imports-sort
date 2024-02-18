@@ -1,14 +1,11 @@
 export interface IParsedNode {
-	default: string | undefined,
-	hasTypeKeyword: string | undefined,
-	namedImports: Array<INamedImport>,
+	default: string | undefined;
+	hasTypeKeyword: boolean;
+	namedImports: Array<INamedImport>;
 	namespace: string | undefined;
-	path: string
-	range: {
-		index: number,
-		lastIndex: number
-	},
+	path: string;
 	multilineImport: boolean;
+	getKeyByImportPath(): string;
 }
 
 export interface INamedImport {
