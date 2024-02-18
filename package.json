@@ -2,11 +2,24 @@
 	"name": "typescript-imports-sort",
 	"displayName": "Typescript Imports Sort",
 	"description": "Very specific typescript import sorter",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"license": "MIT",
 	"categories": [
 		"Formatters"
 	],
+	"engines": {
+		"vscode": "^1.80.0"
+	},
+	"main": "./out/src/extension",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.sortYmports",
+				"title": "Sort ymports"
+			}
+		]
+	},
+	"activationEvents": [],
 	"keywords": [
 		"Typescript",
 		"imports",
@@ -16,13 +29,19 @@
 	],
 	"scripts": {
 		"dev": "ts-node src/index.ts",
-		"test": "vitest run"
+		"test": "vitest run",
+		"compile": "tsc -p ./",
+		"package": "npx vsce package"
 	},
 	"devDependencies": {
-		"@types/node": "^6.14.13",
+		"@types/node": "^16.18.34",
+		"@types/vscode": "^1.73.0",
+		"@typescript-eslint/eslint-plugin": "^6.7.0",
+		"@typescript-eslint/parser": "^6.7.0",
+		"eslint": "^8.26.0",
 		"lodash": "^4.17.21",
 		"tslint": "^5.11.0",
-		"typescript": "^4.2.2"
+		"typescript": "^5.3.2"
 	},
 	"dependencies": {
 		"ts-node": "^10.9.2",
