@@ -19,4 +19,9 @@ describe('Compare sorted output', () => {
 		expect(parser.getOutputForSourceFile(getPathToScenarioFile(2)))
 			.toBe(loadExpectedOutput(2));
 	});
+
+	test('Scenario #3 - detect duplicate namespace imports', () => {
+		expect(parser.getOutputForSourceFile(getPathToScenarioFile(3)))
+			.toBe(loadExpectedOutput(3));
+	});
 });
