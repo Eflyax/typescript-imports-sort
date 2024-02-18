@@ -1,7 +1,6 @@
 .DS_Store
 .tmp
 .vscode-test
-*.vsix
 node_modules
 npm-debug.log
 out
