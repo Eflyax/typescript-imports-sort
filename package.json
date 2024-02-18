@@ -2,7 +2,7 @@
 	"name": "typescript-imports-sort",
 	"displayName": "Typescript Imports Sort",
 	"description": "Very specific typescript import sorter",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"license": "MIT",
 	"categories": [
 		"Formatters"
@@ -10,15 +10,16 @@
 	"engines": {
 		"vscode": "^1.80.0"
 	},
-	"main": "./out/extension",
+	"main": "./out/src/extension",
 	"contributes": {
 		"commands": [
 			{
 				"command": "extension.sortYmports",
-				"title": "Sort imports"
+				"title": "Sort ymports"
 			}
 		]
 	},
+	"activationEvents": [],
 	"keywords": [
 		"Typescript",
 		"imports",
@@ -29,7 +30,8 @@
 	"scripts": {
 		"dev": "ts-node src/index.ts",
 		"test": "vitest run",
-		"compile": "tsc -p ./"
+		"compile": "tsc -p ./",
+		"package": "npx vsce package"
 	},
 	"devDependencies": {
 		"@types/node": "^16.18.34",
