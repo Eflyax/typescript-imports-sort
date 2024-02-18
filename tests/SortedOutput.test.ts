@@ -32,4 +32,5 @@ describe('Compare sorted output', () => {
 		expect(parser.getOutputForSourceFile(getPathToScenarioFile(3)))
 			.toBe(loadExpectedOutput(3));
 	});
+
 });

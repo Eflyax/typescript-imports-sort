@@ -121,13 +121,18 @@ export class Parser {
 			fileInput = fs.readFileSync(filePath, 'utf-8'),
 			nodes = this.parseImportNodes(fileInput);
 
-		let result = '';
+		let
+			sortedNodes = '';
 
 		for (const node of nodes) {
-			result += this.writer.parsedNodeToString(node);
+			sortedNodes += this.writer.parsedNodeToString(node);
 		}
 
-		return result;
+		const
+			contentBeforeImports = fileInput.slice(0, this.parsedRange.from),
+			contentAfterImports = fileInput.slice(this.parsedRange.to, fileInput.length);
+
+		return contentBeforeImports + sortedNodes + contentAfterImports;
 	}
 
 }

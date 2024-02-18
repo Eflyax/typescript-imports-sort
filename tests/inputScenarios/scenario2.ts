@@ -10,3 +10,7 @@ import {useI18n} from 'vue-i18n';
 import type {IOptionsInvestmentCalendar} from '@/src/types/types';
 import {useUi} from '@/src/composables/useUi';
 import {version} from '../package.json';
+
+export class Scenario2 {
+	// some code
+}
