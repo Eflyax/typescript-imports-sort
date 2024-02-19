@@ -109,7 +109,7 @@ export class Parser {
 			defaultAndDestructingImport = `${defaultImportToken}${ws}*,${ws}*${destructingImport}`,
 			combinedImportTypes = `(${namespaceToken}|${defaultImportToken}|${destructingImport}|${defaultAndDestructingImport})`,
 			inlineComment = `(${spaceNoReturns}*[\\/]{2}.*)?`,
-			importRegexString = `^import(\\s+type)?\\s+(${combinedImportTypes}\\s+from\\s+)?['"]([~@#\\w\\\\/\.-]+)['"];?${inlineComment}\\r?\\n?`;
+			importRegexString = `^import(\\s+type)?\\s+(${combinedImportTypes}\\s+from\\s+)?['"]([~@#:\\w\\\\/\.-]+)['"];?${inlineComment}\\r?\\n?`;
 
 			this.importRegex = new RegExp(importRegexString, 'gm');
 			this.destructingImportTokenRegex = new RegExp(destructingImportToken);
