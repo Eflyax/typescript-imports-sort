@@ -119,6 +119,10 @@ export class Parser {
 		const
 			nodes = this.parseImportNodes(source);
 
+		if (!nodes.length) {
+			return '';
+		}
+
 		let
 			sortedNodes = '';
 

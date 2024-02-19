@@ -50,4 +50,12 @@ describe('Compare sorted output', () => {
 		expect(parser.getOutputForSource(loadInput(5)))
 			.toBe(loadExpectedOutput(5));
 	});
+
+	test('Scenario #6 - ignore export', () => {
+		const
+			parser = new Parser();
+
+		expect(parser.getOutputForSource(loadInput(6)))
+			.toBe(loadExpectedOutput(6));
+	});
 });

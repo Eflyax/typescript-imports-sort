@@ -10,6 +10,10 @@ export const activate = (context: vscode.ExtensionContext) => {
 			rawText = document.getText(),
 			result = parser.getOutputForSource(rawText);
 
+		if (!result) {
+			return ;
+		}
+
 		vscode.window.activeTextEditor.edit(builder => {
 			builder.replace(
 				new vscode.Range(
