@@ -20,6 +20,8 @@ import {
 	NFormItem
 } from 'naive-ui';
 
+import './some.scss';
+
 const
 	MIN = 0,
 	MAX = 100;

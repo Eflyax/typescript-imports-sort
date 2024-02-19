@@ -43,7 +43,7 @@ describe('Compare sorted output', () => {
 			.toBe(loadExpectedOutput(4, 'vue'));
 	});
 
-	test('Scenario #5 - hashtag alias', () => {
+	test('Scenario #5 - hashtag alias, symbol ":" in import path', () => {
 		const
 			parser = new Parser();
 
@@ -51,4 +51,11 @@ describe('Compare sorted output', () => {
 			.toBe(loadExpectedOutput(5));
 	});
 
+	test('Scenario #6 - ignore export', () => {
+		const
+			parser = new Parser();
+
+		expect(parser.getOutputForSource(loadInput(6)))
+			.toBe('');
+	});
 });
