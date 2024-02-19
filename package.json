@@ -2,7 +2,7 @@
 	"name": "typescript-imports-sort",
 	"displayName": "Typescript Imports Sort",
 	"description": "Very specific typescript import sorter",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"license": "MIT",
 	"categories": [
 		"Formatters"

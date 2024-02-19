@@ -40,5 +40,6 @@ export enum ParsedNodeGroup {
 	WithDefaultImport = 'withDefaultImport',
 	WithNamedImport = 'withNamedImport',
 	WithoutNamedImport = 'withoutNamedImport',
-	WithTypeKeyword = 'withTypeKeyword'
+	WithTypeKeyword = 'withTypeKeyword',
+	Other = 'other'
 }

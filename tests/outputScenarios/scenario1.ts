@@ -19,6 +19,7 @@ import * as AbstractClass from 'abstract';
 import * as vscode from 'vscode';
 import type {IBar, IFoo} from '@/types';
 import type IRequest from '@/node-types';
+import './some.scss';
 
 const
 	MIN = 0,

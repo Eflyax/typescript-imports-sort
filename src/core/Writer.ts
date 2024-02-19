@@ -14,10 +14,10 @@ export class Writer {
 		if (parsedNode.default) {
 			result += parsedNode.default;
 		}
-		else if (!parsedNode.namedImports) {
+		else if (!parsedNode.namedImports && parsedNode.namespace) {
 			result += `${Literal.All} ${Literal.As} ${parsedNode.namespace}`;
 		}
-		else {
+		else if (parsedNode.namedImports && parsedNode.namedImports) {
 			const
 				lenghtOfNamedImports = parsedNode.namedImports.length;
 
@@ -48,7 +48,11 @@ export class Writer {
 			result += Literal.BracketClose;
 		}
 
-		result += ` ${Literal.From} ${config.QuoteSymbol}${parsedNode.path}${config.QuoteSymbol}`;
+		if (parsedNode.namespace || parsedNode.namedImports || parsedNode.default) {
+			result += ` ${Literal.From} `
+		}
+
+		result += `${config.QuoteSymbol}${parsedNode.path}${config.QuoteSymbol}`;
 
 		if (config.UseSemicolon) {
 			result += Literal.Semicolon;

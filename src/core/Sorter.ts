@@ -8,7 +8,8 @@ export class Sorter {
 				[ParsedNodeGroup.WithNamedImport]: [],
 				[ParsedNodeGroup.WithDefaultImport]: [],
 				[ParsedNodeGroup.WithoutNamedImport]: [],
-				[ParsedNodeGroup.WithTypeKeyword]: []
+				[ParsedNodeGroup.WithTypeKeyword]: [],
+				[ParsedNodeGroup.Other]: []
 			}
 
 		nodes.forEach((node: IParsedNode) => {
@@ -28,11 +29,15 @@ export class Sorter {
 				nodeGroups[ParsedNodeGroup.WithDefaultImport].push(node);
 				nodeGroups[ParsedNodeGroup.WithDefaultImport].sort(this.compareNodesWithDefaultImport);
 			}
+			else if (!node.namespace) {
+				nodeGroups[ParsedNodeGroup.Other].push(node);
+			}
 			else {
 				nodeGroups[ParsedNodeGroup.WithoutNamedImport].push(node);
 				nodeGroups[ParsedNodeGroup.WithoutNamedImport].sort(this.compareNodesWithoutNamedImport)
 			}
 		});
+
 		let
 			result = [];
 
