@@ -3,7 +3,9 @@ import {Parser} from '../src/core/Parser';
 import fs from 'fs';
 
 const
-	getPathToScenarioFile = (id: number, extension = 'ts'): string => `${__dirname}/inputScenarios/scenario${id}.${extension}`,
+	loadInput = (id: number, extension = 'ts'): string => {
+		return fs.readFileSync(`${__dirname}/inputScenarios/scenario${id}.${extension}`, 'utf-8');
+	},
 	loadExpectedOutput = (id: number, extension = 'ts'): string => {
 		return fs.readFileSync(`${__dirname}/outputScenarios/scenario${id}.${extension}`, 'utf-8');
 	};
@@ -13,7 +15,7 @@ describe('Compare sorted output', () => {
 		const
 			parser = new Parser();
 
-		expect(parser.getOutputForSourceFile(getPathToScenarioFile(1)))
+		expect(parser.getOutputForSource(loadInput(1)))
 			.toBe(loadExpectedOutput(1));
 	});
 
@@ -21,7 +23,7 @@ describe('Compare sorted output', () => {
 		const
 			parser = new Parser();
 
-		expect(parser.getOutputForSourceFile(getPathToScenarioFile(2)))
+		expect(parser.getOutputForSource(loadInput(2)))
 			.toBe(loadExpectedOutput(2));
 	});
 
@@ -29,7 +31,7 @@ describe('Compare sorted output', () => {
 		const
 			parser = new Parser();
 
-		expect(parser.getOutputForSourceFile(getPathToScenarioFile(3)))
+		expect(parser.getOutputForSource(loadInput(3)))
 			.toBe(loadExpectedOutput(3));
 	});
 
@@ -37,8 +39,16 @@ describe('Compare sorted output', () => {
 		const
 			parser = new Parser();
 
-		expect(parser.getOutputForSourceFile(getPathToScenarioFile(4, 'vue')))
+		expect(parser.getOutputForSource(loadInput(4, 'vue')))
 			.toBe(loadExpectedOutput(4, 'vue'));
+	});
+
+	test('Scenario #5 - hashtag alias', () => {
+		const
+			parser = new Parser();
+
+		expect(parser.getOutputForSource(loadInput(5)))
+			.toBe(loadExpectedOutput(5));
 	});
 
 });
