@@ -10,6 +10,6 @@ import {
 import {productGetters} from '@/composables/getters/productGetters';
 import {ProductQueryIdentifier} from '@library/types';
 import {SystemEvents} from '@/helpers/SystemEvents';
-import {useHead, useLayout, useRoute, useNuxtApp} from '#imports';
+import {useHead, useLayout, useNuxtApp, useRoute} from '#imports';
 import truckGraySvg from '@/assets/icons/truck_gray.svg';
 import type {IBadge, IVariant} from '@library/types';
