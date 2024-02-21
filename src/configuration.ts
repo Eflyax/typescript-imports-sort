@@ -1,7 +1,7 @@
 import type {IConfiguration} from './types';
 
 export const configuration: IConfiguration = {
-	IndentationSymbol: ` `,
+	TabsIndentation: true,
 	MaximumLineLength: 90,
 	QuoteSymbol: `'`,
 	SpaceAroundBrackets: false,

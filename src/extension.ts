@@ -1,4 +1,4 @@
-import {configuration} from './configuration';
+import {IConfiguration} from './types';
 import {Parser} from './core/Parser';
 import * as vscode from 'vscode';
 
@@ -11,9 +11,12 @@ function hashCode(s: string): number {
 }
 
 export const activate = (context: vscode.ExtensionContext) => {
-	const command = vscode.commands.registerCommand('extension.sortYmports', () => {
+	const command = vscode.commands.registerCommand('extension.sortImports', () => {
+
+		console.log({'getConfiguration()': getConfiguration()});
+
 		const
-			parser = new Parser(configuration),
+			parser = new Parser(getConfiguration()),
 			editor = vscode.window.activeTextEditor,
 			document = editor.document,
 			rawText = document.getText(),
@@ -40,3 +43,16 @@ export const activate = (context: vscode.ExtensionContext) => {
 export const deactivate =  () => {
 
 };
+
+function getConfiguration(): IConfiguration {
+	const
+		extensionConfiguration = vscode.workspace.getConfiguration('typescript.extension.sortImports');
+
+	return {
+		TabsIndentation: extensionConfiguration.tabsIndentation,
+		MaximumLineLength: extensionConfiguration.maxCharactersInSingleLine,
+		QuoteSymbol: extensionConfiguration.quoteStyle === 'single' ? `'`: `"`,
+		SpaceAroundBrackets: extensionConfiguration.spaceAroundBrackets,
+		UseSemicolon: extensionConfiguration.omitSemicolon
+	} as IConfiguration;
+}
