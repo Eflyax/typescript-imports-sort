@@ -1,26 +1,24 @@
-import {config} from '../config';
 import {ParsedGroup} from '../types';
 import {ParsedNode} from './ParsedNode';
 import {Sorter} from './Sorter';
-import {Writer} from './Writer';
-import type {INamedImport, IParsedNode} from '../types';
+import type {IConfiguration, INamedImport, IParsedNode} from '../types';
 
 export class Parser {
 
 	private destructingImportTokenRegex: RegExp;
 	private importRegex: RegExp;
 	private sorter: Sorter;
-	private writer: Writer;
 	private parsedRange = {
 		from: 0,
 		to: 0
 	};
 	private parsedNodes: Record<string, IParsedNode> = {};
+	private configuration: IConfiguration = {};
 
-	constructor() {
+	constructor(configuration: IConfiguration) {
 		this.initRegex();
+		this.configuration = configuration;
 		this.sorter = new Sorter();
-		this.writer = new Writer();
 	}
 
 	parseDestructiveImports = (destructiveImports: string): Array<INamedImport> => {
@@ -63,13 +61,20 @@ export class Parser {
 			parsedNode.namedImports = this.parseDestructiveImports(match[ParsedGroup.DestructingImportGroup]);
 			parsedNode.namespace = match[ParsedGroup.NamespaceImport];
 			parsedNode.path = match[ParsedGroup.FilePath];
-			parsedNode.multilineImport = config.multilinePaths.includes(match[ParsedGroup.FilePath]);
+
+
+			// parsedNode.multilineImport = false; // TODO config.multilinePaths.includes(match[ParsedGroup.FilePath]);
+
+			console.log(parsedNode.toString());
 
 			const
 				nodeKey = parsedNode.getKeyByImportPath();
 
 			if (this.parsedNodes[nodeKey]) {
-				this.parsedNodes[nodeKey].namedImports = [].concat(this.parsedNodes[nodeKey].namedImports, parsedNode.namedImports);
+				this.parsedNodes[nodeKey].namedImports = [].concat(
+					this.parsedNodes[nodeKey].namedImports,
+					parsedNode.namedImports
+				);
 			}
 			else {
 				this.parsedNodes[nodeKey] = parsedNode;
@@ -117,7 +122,7 @@ export class Parser {
 
 	getOutputForSource(source: string): string {
 		const
-			nodes = this.parseImportNodes(source);
+			nodes = this.parseImportNodes(source) as Array<IParsedNode>;
 
 		if (!nodes.length) {
 			return '';
@@ -127,7 +132,7 @@ export class Parser {
 			sortedNodes = '';
 
 		for (const node of nodes) {
-			sortedNodes += this.writer.parsedNodeToString(node);
+			sortedNodes += node.toString();
 		}
 
 		const

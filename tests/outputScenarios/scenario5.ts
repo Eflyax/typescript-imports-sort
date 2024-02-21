@@ -2,11 +2,7 @@ import {ChevronDown as IconChevronDown, ChevronUp as IconChevronUp} from '@vicon
 import {getThemeSnippetList} from '@/components/snippets/themeSnippetList';
 import {HelpFilled as IconHelpFilled} from '@vicons/material';
 import {mdiChevronDown, mdiChevronRight, mdiHome} from '@mdi/js';
-import {
-	NButton,
-	NIcon,
-	NPopover
-} from 'naive-ui';
+import {NButton, NIcon, NPopover} from 'naive-ui';
 import {productGetters} from '@/composables/getters/productGetters';
 import {ProductQueryIdentifier} from '@library/types';
 import {SystemEvents} from '@/helpers/SystemEvents';

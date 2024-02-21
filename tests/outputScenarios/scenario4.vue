@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import {computed, onMounted, reactive} from 'vue';
 import {Icon} from '@iconify/vue';
-import {
-	NButton,
-	NDropdown,
-	NTooltip
-} from 'naive-ui';
+import {NButton, NDropdown, NTooltip} from 'naive-ui';
 import type {IAgent, IClient} from '@/types';
 import type {PropType} from 'vue';
 

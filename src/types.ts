@@ -1,16 +1,26 @@
 export interface IParsedNode {
 	default: string | undefined;
 	hasTypeKeyword: boolean;
+	multilineImport: boolean;
 	namedImports: Array<INamedImport>;
 	namespace: string | undefined;
 	path: string;
-	multilineImport: boolean;
 	getKeyByImportPath(): string;
+	getOutputPath(): string;
+	toString(): string;
 }
 
 export interface INamedImport {
 	alias: string | undefined;
 	importName: string;
+}
+
+export interface IConfiguration {
+	IndentationSymbol: string;
+	MaximumLineLength: number;
+	QuoteSymbol: string;
+	SpaceAroundBrackets: boolean;
+	UseSemicolon: boolean;
 }
 
 export enum ParsedGroup {
@@ -37,9 +47,9 @@ export enum Literal {
 }
 
 export enum ParsedNodeGroup {
+	Other = 'other',
 	WithDefaultImport = 'withDefaultImport',
 	WithNamedImport = 'withNamedImport',
 	WithoutNamedImport = 'withoutNamedImport',
-	WithTypeKeyword = 'withTypeKeyword',
-	Other = 'other'
+	WithTypeKeyword = 'withTypeKeyword'
 }

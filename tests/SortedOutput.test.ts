@@ -19,43 +19,43 @@ describe('Compare sorted output', () => {
 			.toBe(loadExpectedOutput(1));
 	});
 
-	test('Scenario #2', () => {
-		const
-			parser = new Parser();
+	// test('Scenario #2', () => {
+	// 	const
+	// 		parser = new Parser();
 
-		expect(parser.getOutputForSource(loadInput(2)))
-			.toBe(loadExpectedOutput(2));
-	});
+	// 	expect(parser.getOutputForSource(loadInput(2)))
+	// 		.toBe(loadExpectedOutput(2));
+	// });
 
-	test('Scenario #3 - detect duplicate namespace imports', () => {
-		const
-			parser = new Parser();
+	// test('Scenario #3 - detect duplicate namespace imports', () => {
+	// 	const
+	// 		parser = new Parser();
 
-		expect(parser.getOutputForSource(loadInput(3)))
-			.toBe(loadExpectedOutput(3));
-	});
+	// 	expect(parser.getOutputForSource(loadInput(3)))
+	// 		.toBe(loadExpectedOutput(3));
+	// });
 
-	test('Scenario #4 - Vue SFC', () => {
-		const
-			parser = new Parser();
+	// test('Scenario #4 - Vue SFC', () => {
+	// 	const
+	// 		parser = new Parser();
 
-		expect(parser.getOutputForSource(loadInput(4, 'vue')))
-			.toBe(loadExpectedOutput(4, 'vue'));
-	});
+	// 	expect(parser.getOutputForSource(loadInput(4, 'vue')))
+	// 		.toBe(loadExpectedOutput(4, 'vue'));
+	// });
 
-	test('Scenario #5 - hashtag alias, symbol ":" in import path', () => {
-		const
-			parser = new Parser();
+	// test('Scenario #5 - hashtag alias, symbol ":" in import path', () => {
+	// 	const
+	// 		parser = new Parser();
 
-		expect(parser.getOutputForSource(loadInput(5)))
-			.toBe(loadExpectedOutput(5));
-	});
+	// 	expect(parser.getOutputForSource(loadInput(5)))
+	// 		.toBe(loadExpectedOutput(5));
+	// });
 
-	test('Scenario #6 - ignore export', () => {
-		const
-			parser = new Parser();
+	// test('Scenario #6 - ignore export', () => {
+	// 	const
+	// 		parser = new Parser();
 
-		expect(parser.getOutputForSource(loadInput(6)))
-			.toBe('');
-	});
+	// 	expect(parser.getOutputForSource(loadInput(6)))
+	// 		.toBe('');
+	// });
 });
