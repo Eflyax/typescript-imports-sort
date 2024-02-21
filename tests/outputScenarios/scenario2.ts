@@ -1,9 +1,4 @@
-import {
-	NConfigProvider,
-	NMessageProvider,
-	NNotificationProvider,
-	NSpin
-} from 'naive-ui';
+import {NConfigProvider, NMessageProvider, NNotificationProvider, NSpin} from 'naive-ui';
 import {Resources, SdkLoader, themeOverrides} from 'shared';
 import {useCalculation} from './composables/useCalculation';
 import {useI18n} from 'vue-i18n';

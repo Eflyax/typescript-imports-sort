@@ -1,3 +1,4 @@
+import {configuration} from './configuration';
 import {Parser} from './core/Parser';
 import * as vscode from 'vscode';
 
@@ -12,7 +13,7 @@ function hashCode(s: string): number {
 export const activate = (context: vscode.ExtensionContext) => {
 	const command = vscode.commands.registerCommand('extension.sortYmports', () => {
 		const
-			parser = new Parser(),
+			parser = new Parser(configuration),
 			editor = vscode.window.activeTextEditor,
 			document = editor.document,
 			rawText = document.getText(),

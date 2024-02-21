@@ -1,3 +1,4 @@
+import {configuration} from '../src/configuration';
 import {describe, expect, test} from 'vitest';
 import {Parser} from '../src/core/Parser';
 import fs from 'fs';
@@ -13,7 +14,7 @@ const
 describe('Compare sorted output', () => {
 	test('Scenario #1', () => {
 		const
-			parser = new Parser();
+			parser = new Parser(configuration);
 
 		expect(parser.getOutputForSource(loadInput(1)))
 			.toBe(loadExpectedOutput(1));
@@ -21,7 +22,7 @@ describe('Compare sorted output', () => {
 
 	test('Scenario #2', () => {
 		const
-			parser = new Parser();
+			parser = new Parser(configuration);
 
 		expect(parser.getOutputForSource(loadInput(2)))
 			.toBe(loadExpectedOutput(2));
@@ -29,7 +30,7 @@ describe('Compare sorted output', () => {
 
 	test('Scenario #3 - detect duplicate namespace imports', () => {
 		const
-			parser = new Parser();
+			parser = new Parser(configuration);
 
 		expect(parser.getOutputForSource(loadInput(3)))
 			.toBe(loadExpectedOutput(3));
@@ -37,7 +38,7 @@ describe('Compare sorted output', () => {
 
 	test('Scenario #4 - Vue SFC', () => {
 		const
-			parser = new Parser();
+			parser = new Parser(configuration);
 
 		expect(parser.getOutputForSource(loadInput(4, 'vue')))
 			.toBe(loadExpectedOutput(4, 'vue'));
@@ -45,7 +46,7 @@ describe('Compare sorted output', () => {
 
 	test('Scenario #5 - hashtag alias, symbol ":" in import path', () => {
 		const
-			parser = new Parser();
+			parser = new Parser(configuration);
 
 		expect(parser.getOutputForSource(loadInput(5)))
 			.toBe(loadExpectedOutput(5));
@@ -53,9 +54,17 @@ describe('Compare sorted output', () => {
 
 	test('Scenario #6 - ignore export', () => {
 		const
-			parser = new Parser();
+			parser = new Parser(configuration);
 
 		expect(parser.getOutputForSource(loadInput(6)))
 			.toBe('');
+	});
+
+		test('Scenario #7 - multiline import', () => {
+		const
+			parser = new Parser(configuration);
+
+		expect(parser.getOutputForSource(loadInput(7)))
+			.toBe(loadExpectedOutput(7));
 	});
 });
