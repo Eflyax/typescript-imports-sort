@@ -60,11 +60,25 @@ describe('Compare sorted output', () => {
 			.toBe('');
 	});
 
-		test('Scenario #7 - multiline import', () => {
+	test('Scenario #7 - multiline import', () => {
 		const
 			parser = new Parser(configuration);
 
 		expect(parser.getOutputForSource(loadInput(7)))
 			.toBe(loadExpectedOutput(7));
+	});
+
+	test('Scenario #8 - configuration', () => {
+		const
+			parser = new Parser({
+				TabsIndentation: false,
+				MaximumLineLength: 1,
+				QuoteSymbol: `"`,
+				SpaceAroundBrackets: true,
+				UseSemicolon: false
+			});
+
+		expect(parser.getOutputForSource(loadInput(8)))
+			.toBe(loadExpectedOutput(8));
 	});
 });

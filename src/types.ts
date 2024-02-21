@@ -1,3 +1,5 @@
+import {Parser} from './core/Parser';
+
 export interface IParsedNode {
 	default: string | undefined;
 	hasTypeKeyword: boolean;
@@ -5,6 +7,7 @@ export interface IParsedNode {
 	namedImports: Array<INamedImport>;
 	namespace: string | undefined;
 	path: string;
+	parser: Parser;
 	getKeyByImportPath(): string;
 	getOutputPath(): string;
 	toString(): string;
@@ -16,10 +19,10 @@ export interface INamedImport {
 }
 
 export interface IConfiguration {
-	IndentationSymbol: string;
 	MaximumLineLength: number;
 	QuoteSymbol: string;
 	SpaceAroundBrackets: boolean;
+	TabsIndentation: boolean;
 	UseSemicolon: boolean;
 }
 

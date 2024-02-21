@@ -54,7 +54,7 @@ export class Parser {
 
 		while ((match =  this.importRegex.exec(source))) {
 			const
-				parsedNode = new ParsedNode();
+				parsedNode = new ParsedNode(this);
 
 			parsedNode.default = match[ParsedGroup.DefaultImport];
 			parsedNode.hasTypeKeyword = !!match[ParsedGroup.TypeKeyword];
@@ -138,6 +138,10 @@ export class Parser {
 			contentAfterImports = source.slice(this.parsedRange.to, source.length);
 
 		return contentBeforeImports + sortedNodes + contentAfterImports;
+	}
+
+	public getConfiguration(): IConfiguration {
+		return this.configuration;
 	}
 
 }

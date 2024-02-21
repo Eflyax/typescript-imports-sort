@@ -1,5 +1,5 @@
-import {configuration} from '../configuration';
 import {Literal} from '../types';
+import {Parser} from './Parser';
 import type {INamedImport, IParsedNode} from '../types';
 
 export class ParsedNode implements IParsedNode {
@@ -9,6 +9,11 @@ export class ParsedNode implements IParsedNode {
 	namespace = '';
 	path = '';
 	multilineImport = false;
+	parser: Parser;
+
+	constructor(parser: Parser) {
+		this.parser = parser;
+	}
 
 	getKeyByImportPath(): string {
 		return `type:${this.hasTypeKeyword}@path:${this.path}`;
@@ -39,7 +44,7 @@ export class ParsedNode implements IParsedNode {
 
 			this.namedImports.forEach((namedImport: INamedImport, index: number) => {
 				if (this.multilineImport) {
-					result += '\t';
+					result += this.parser.getConfiguration().TabsIndentation ?  '\t' : ' ';
 				}
 				result += namedImport.importName;
 
@@ -66,7 +71,11 @@ export class ParsedNode implements IParsedNode {
 	}
 
 	getOutputPath(): string {
-		let result = '';
+		const
+			configuration = this.parser.getConfiguration();
+
+		let
+			result = '';
 
 		if (this.namespace || this.namedImports || this.default) {
 			result += ` ${Literal.From} `
