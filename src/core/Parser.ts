@@ -13,7 +13,7 @@ export class Parser {
 		to: 0
 	};
 	private parsedNodes: Record<string, IParsedNode> = {};
-	private configuration: IConfiguration = {};
+	private configuration: IConfiguration;
 
 	constructor(configuration: IConfiguration) {
 		this.initRegex();
@@ -61,11 +61,9 @@ export class Parser {
 			parsedNode.namedImports = this.parseDestructiveImports(match[ParsedGroup.DestructingImportGroup]);
 			parsedNode.namespace = match[ParsedGroup.NamespaceImport];
 			parsedNode.path = match[ParsedGroup.FilePath];
-
-
-			// parsedNode.multilineImport = false; // TODO config.multilinePaths.includes(match[ParsedGroup.FilePath]);
-
-			console.log(parsedNode.toString());
+			parsedNode.multilineImport = parsedNode.toString()
+				.replace(parsedNode.getOutputPath(), '')
+				.length > this.configuration.MaximumLineLength;
 
 			const
 				nodeKey = parsedNode.getKeyByImportPath();
