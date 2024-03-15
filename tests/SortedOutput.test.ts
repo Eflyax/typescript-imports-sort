@@ -81,4 +81,12 @@ describe('Compare sorted output', () => {
 		expect(parser.getOutputForSource(loadInput(8)))
 			.toBe(loadExpectedOutput(8));
 	});
+
+	test('Scenario #9 - sort types', () => {
+		const
+			parser = new Parser(configuration);
+
+		expect(parser.getOutputForSource(loadInput(9)))
+			.toBe(loadExpectedOutput(9));
+	});
 });
