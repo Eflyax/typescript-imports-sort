@@ -17,5 +17,5 @@
 # 	}
 # }
 
-OUTPUT="$(cd $1 && npx tsx src/formatter.ts $2)"
+OUTPUT="$(cd $1 && node src/formatter.js $2)"
 echo "${OUTPUT}"

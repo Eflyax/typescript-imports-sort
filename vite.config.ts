@@ -6,5 +6,5 @@ export default defineConfig({
 			'node_modules/*',
 			'tests/inputScenarios/*'
 		],
-	},
+	}
 })

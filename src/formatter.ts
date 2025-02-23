@@ -1,7 +1,7 @@
 import {configuration} from './configuration';
 import {Parser} from './core/Parser';
-import {IConfiguration} from './core/IConfiguration';
-import fs from 'fs';
+import {IConfiguration} from './types';
+import * as fs from 'fs';
 
 function getConfiguration(): IConfiguration {
 	const
@@ -10,27 +10,37 @@ function getConfiguration(): IConfiguration {
 	return {
 		tabsIndentation: extensionConfiguration.tabsIndentation,
 		maximumLineLength: extensionConfiguration.maxCharactersInSingleLine,
-		quoteSymbol: extensionConfiguration.quoteStyle === 'single' ? `'`: `"`,
+		quoteSymbol: extensionConfiguration.quoteStyle === 'single' ? `'` : `"`,
 		spaceAroundBrackets: extensionConfiguration.spaceAroundBrackets,
 		useSemicolon: extensionConfiguration.useSemicolon
 	} as IConfiguration;
 }
 
-const
-	pathToFile = process.argv[2];
-
-fs.readFile(pathToFile, 'utf8', (err, fileContent: string) => {
-	if (err) {
-		throw err;
-	}
+try {
 
 	const
-		parser = new Parser(getConfiguration());
+		pathToFile = process.argv[2];
 
-	let
-		result = parser.getOutputForSource(fileContent);
+	fs.readFile(pathToFile, 'utf8', (err, fileContent: string) => {
+		if (err) {
+			throw err;
+		}
 
-	result = result.replaceAll('    ', '\t');
+		const
+			parser = new Parser(getConfiguration());
 
-	console.log(result);
-});
+		let
+			result = parser.getOutputForSource(fileContent);
+
+		const
+			substring = '    ',
+			replacement = '\t';
+
+		result = result.replace(new RegExp(substring, 'g'), replacement);
+
+		console.log(result);
+	});
+}
+catch (error) {
+	console.error(error);
+}
