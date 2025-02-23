@@ -19,11 +19,13 @@ export interface INamedImport {
 }
 
 export interface IConfiguration {
-	MaximumLineLength: number;
-	QuoteSymbol: string;
-	SpaceAroundBrackets: boolean;
-	TabsIndentation: boolean;
-	UseSemicolon: boolean;
+	maximumLineLength: number;
+	quoteSymbol: string;
+	spaceAroundBrackets: boolean;
+	tabsIndentation: boolean;
+	useSemicolon: boolean;
+	maxCharactersInSingleLine: number;
+	quoteStyle: string;
 }
 
 export enum ParsedGroup {

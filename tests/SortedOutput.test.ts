@@ -71,11 +71,11 @@ describe('Compare sorted output', () => {
 	test('Scenario #8 - configuration', () => {
 		const
 			parser = new Parser({
-				TabsIndentation: false,
-				MaximumLineLength: 1,
-				QuoteSymbol: `"`,
-				SpaceAroundBrackets: true,
-				UseSemicolon: false
+				tabsIndentation: false,
+				maximumLineLength: 1,
+				quoteSymbol: `"`,
+				spaceAroundBrackets: true,
+				useSemicolon: false
 			});
 
 		expect(parser.getOutputForSource(loadInput(8)))

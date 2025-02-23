@@ -63,7 +63,7 @@ export class Parser {
 			parsedNode.path = match[ParsedGroup.FilePath];
 			parsedNode.multilineImport = parsedNode.toString()
 				.replace(parsedNode.getOutputPath(), '')
-				.length > this.configuration.MaximumLineLength;
+				.length > this.configuration.maximumLineLength;
 
 			const
 				nodeKey = parsedNode.getKeyByImportPath();
