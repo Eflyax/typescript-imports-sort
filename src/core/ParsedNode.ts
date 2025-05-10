@@ -44,7 +44,7 @@ export class ParsedNode implements IParsedNode {
 
 			this.namedImports.forEach((namedImport: INamedImport, index: number) => {
 				if (this.multilineImport) {
-					result += this.parser.getConfiguration().tabsIndentation ?  '\t' : ' ';
+					result += this.parser.getConfiguration().tabsIndentation ? '\t' : ' ';
 				}
 				result += namedImport.importName;
 
