@@ -83,11 +83,18 @@ export class Sorter {
 	}
 
 	compareNodesWithTypeKeyword(objectA: IParsedNode, objectB: IParsedNode): number {
-		const
-			namedImportsA = objectA.namedImports?.length ? 1 : 0,
-			namedImportsB = objectB.namedImports?.length ? 1 : 0;
+		if (objectA.default && !objectB.default) {
+			return 1;
+		}
+		else if(!objectA.default && objectB.default) {
+			return -1;
+		}
 
-		return (namedImportsA < namedImportsB) ? 1 : (namedImportsA > namedImportsB) ? -1 : 0;
+		const
+			namedImportsA = objectA.namedImports ? objectA.namedImports[0]?.importName.toUpperCase() : '',
+			namedImportsB = objectB.namedImports ? objectB.namedImports[0]?.importName.toUpperCase() : '';
+
+		return (namedImportsA < namedImportsB) ? -1 : (namedImportsA > namedImportsB) ? 1 : 0;
 	}
 
 	compareNamedImports(objectA: INamedImport, objectB: INamedImport): number {

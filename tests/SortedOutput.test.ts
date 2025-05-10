@@ -71,14 +71,31 @@ describe('Compare sorted output', () => {
 	test('Scenario #8 - configuration', () => {
 		const
 			parser = new Parser({
-				TabsIndentation: false,
-				MaximumLineLength: 1,
-				QuoteSymbol: `"`,
-				SpaceAroundBrackets: true,
-				UseSemicolon: false
+				tabsIndentation: false,
+				maximumLineLength: 1,
+				quoteSymbol: `"`,
+				spaceAroundBrackets: true,
+				useSemicolon: false
 			});
 
 		expect(parser.getOutputForSource(loadInput(8)))
 			.toBe(loadExpectedOutput(8));
+	});
+
+	test('Scenario #9 - sort types', () => {
+		const
+			parser = new Parser(configuration);
+
+		expect(parser.getOutputForSource(loadInput(9)))
+			.toBe(loadExpectedOutput(9));
+	});
+
+
+	test('Scenario #10 - sort types', () => {
+		const
+			parser = new Parser(configuration);
+
+		expect(parser.getOutputForSource(loadInput(10)))
+			.toBe(loadExpectedOutput(10));
 	});
 });

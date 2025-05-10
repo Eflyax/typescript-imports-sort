@@ -44,7 +44,7 @@ export class ParsedNode implements IParsedNode {
 
 			this.namedImports.forEach((namedImport: INamedImport, index: number) => {
 				if (this.multilineImport) {
-					result += this.parser.getConfiguration().TabsIndentation ?  '\t' : ' ';
+					result += this.parser.getConfiguration().tabsIndentation ? '\t' : ' ';
 				}
 				result += namedImport.importName;
 
@@ -81,9 +81,9 @@ export class ParsedNode implements IParsedNode {
 			result += ` ${Literal.From} `
 		}
 
-		result += `${configuration.QuoteSymbol}${this.path}${configuration.QuoteSymbol}`;
+		result += `${configuration.quoteSymbol}${this.path}${configuration.quoteSymbol}`;
 
-		if (configuration.UseSemicolon) {
+		if (configuration.useSemicolon) {
 			result += Literal.Semicolon;
 		}
 
