@@ -16,8 +16,8 @@ import type IRequest from '@/node-types';
 import './some.scss';
 
 const
-	MIN = 0,
-	MAX = 100;
+	MAX = 100,
+	MIN = 0;
 
 export class Scenario1 {
 	// some code

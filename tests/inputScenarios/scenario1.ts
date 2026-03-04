@@ -1,6 +1,6 @@
 export enum Sex {
-	M = 'man',
-	W = 'woman'
+	W = 'woman',
+	M = 'man'
  }
 
 import * as vscode from 'vscode';
@@ -23,8 +23,8 @@ import {
 import './some.scss';
 
 const
-	MIN = 0,
-	MAX = 100;
+	MAX = 100,
+	MIN = 0;
 
 export class Scenario1 {
 	// some code
