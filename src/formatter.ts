@@ -29,7 +29,7 @@ if (stdin) {
 }
 
 function formatVue(src: string): string {
-    const templateMatch = src.match(/(<template[^>]*>)([\s\S]*?)(<\/template>)/);
+    const templateMatch = src.match(/(<template[^>]*>)([\s\S]*)(<\/template>)/);
     if (templateMatch) {
         const sortedTemplate = sortVueTemplateAttrs(templateMatch[2]);
         src = src.replace(templateMatch[0], `${templateMatch[1]}${sortedTemplate}${templateMatch[3]}`);
