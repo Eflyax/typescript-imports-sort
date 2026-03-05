@@ -1,9 +1,10 @@
+import {sortBlocks} from './formatters/blockSorter';
+import {sortCss} from './formatters/cssSorter';
+import {sortImports} from './formatters/importSorter';
+import {sortVueComponents} from './formatters/vueComponentsSorter';
+import {sortVueTemplateAttrs} from './formatters/vueAttrSorter';
 import * as fs from 'fs';
 import * as path from 'path';
-import { sortImports } from './formatters/importSorter';
-import { sortBlocks } from './formatters/blockSorter';
-import { sortVueComponents } from './formatters/vueComponentsSorter';
-import { sortCss } from './formatters/cssSorter';
 
 const filePath = process.argv[2];
 
@@ -15,14 +16,25 @@ if (!filePath) {
 const ext = path.extname(filePath).toLowerCase();
 let content: string;
 
-try {
-    content = fs.readFileSync(filePath, 'utf-8');
-} catch (e) {
-    process.stderr.write(`Cannot read file: ${filePath}\n`);
-    process.exit(1);
+const stdin = fs.readFileSync(0, 'utf-8');
+if (stdin) {
+    content = stdin;
+} else {
+    try {
+        content = fs.readFileSync(filePath, 'utf-8');
+    } catch (e) {
+        process.stderr.write(`Cannot read file: ${filePath}\n`);
+        process.exit(1);
+    }
 }
 
 function formatVue(src: string): string {
+    const templateMatch = src.match(/(<template[^>]*>)([\s\S]*?)(<\/template>)/);
+    if (templateMatch) {
+        const sortedTemplate = sortVueTemplateAttrs(templateMatch[2]);
+        src = src.replace(templateMatch[0], `${templateMatch[1]}${sortedTemplate}${templateMatch[3]}`);
+    }
+
     const scriptMatch = src.match(/(<script[^>]*>)([\s\S]*?)(<\/script>)/);
     if (scriptMatch) {
         let scriptContent = scriptMatch[2];

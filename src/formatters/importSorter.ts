@@ -1,15 +1,15 @@
 type ImportKind = 'destructured' | 'default' | 'namespace' | 'type' | 'type-default' | 'sideEffect';
 
 interface ImportItem {
-    name: string;
     alias?: string;
+    name: string;
 }
 
 interface ParsedImport {
-    kind: ImportKind;
     items: ImportItem[];
-    source: string;
+    kind: ImportKind;
     raw: string;
+    source: string;
 }
 
 function parseImportStatement(raw: string): ParsedImport | null {

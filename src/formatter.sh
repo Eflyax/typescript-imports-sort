@@ -1,21 +1,5 @@
 #!/bin/bash
+# $1 = project root
+# $2 = buffer_path
 
-#
-# ZED IDE config:
-#
-# "languages": {
-# 	"TypeScript": {
-# 		"formatter": {
-# 			"external": {
-# 				"command": "<full-path>/typescript-imports-sort/src/formatter.sh",
-# 				"arguments": [
-# 					"<full-path>/typescript-imports-sort/",
-# 					"{buffer_path}"
-# 				]
-# 			}
-# 		}
-# 	}
-# }
-
-OUTPUT="$(cd $1 && node_modules/.bin/tsx src/formatter.ts $2)"
-echo "${OUTPUT}"
+exec "$1/node_modules/.bin/tsx" "$1/src/formatter.ts" "$2"

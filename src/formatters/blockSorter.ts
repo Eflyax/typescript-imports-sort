@@ -3,9 +3,9 @@
  */
 
 interface Member {
-    lines: string[];
-    key: string;
     hasComma: boolean;
+    key: string;
+    lines: string[];
 }
 
 function extractMemberKey(lines: string[]): string {
@@ -43,6 +43,7 @@ function parseMembers(body: string): Member[] {
     const members: Member[] = [];
     let currentLines: string[] = [];
     let inContent = false;
+    let depth = 0;
 
     for (const line of lines) {
         const trimmed = line.trim();
@@ -60,13 +61,16 @@ function parseMembers(body: string): Member[] {
             continue;
         }
 
-        if (inContent) {
-            members.push({ lines: [...currentLines], key: extractMemberKey(currentLines), hasComma: hasTrailingComma(currentLines) });
-            currentLines = [];
+        if (depth === 0) {
+            if (inContent) {
+                members.push({ lines: [...currentLines], key: extractMemberKey(currentLines), hasComma: hasTrailingComma(currentLines) });
+                currentLines = [];
+            }
+            inContent = true;
         }
 
-        inContent = true;
         currentLines.push(line);
+        depth += (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
     }
 
     if (inContent && currentLines.length > 0) {
@@ -76,18 +80,78 @@ function parseMembers(body: string): Member[] {
     return members;
 }
 
+function processNestedBlocks(lines: string[]): string[] {
+    const result: string[] = [];
+    let i = 0;
+
+    while (i < lines.length) {
+        const line = lines[i];
+        const opens = (line.match(/\{/g) || []).length;
+        const closes = (line.match(/\}/g) || []).length;
+
+        if (opens > closes) {
+            result.push(line);
+            const bodyLines: string[] = [];
+            let depth = opens - closes;
+            i++;
+
+            while (i < lines.length) {
+                const o = (lines[i].match(/\{/g) || []).length;
+                const c = (lines[i].match(/\}/g) || []).length;
+                depth += o - c;
+
+                if (depth <= 0) {
+                    const sortedBody = sortAndRebuildBody(bodyLines.join('\n'), 'interface');
+                    result.push(...processNestedBlocks(sortedBody.split('\n')));
+                    result.push(lines[i]);
+                    i++;
+                    break;
+                } else {
+                    bodyLines.push(lines[i]);
+                    i++;
+                }
+            }
+        } else {
+            result.push(line);
+            i++;
+        }
+    }
+
+    return result;
+}
+
+function extractNumericValue(lines: string[]): number | null {
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) continue;
+        const match = trimmed.match(/^[A-Za-z_$][A-Za-z0-9_$?]*\s*=\s*(-?\d+(?:\.\d+)?)/);
+        return match ? parseFloat(match[1]) : null;
+    }
+    return null;
+}
+
 function sortAndRebuildBody(body: string, blockType: 'interface' | 'enum'): string {
     const members = parseMembers(body);
     if (members.length <= 1) return body;
 
-    const sorted = [...members].sort((a, b) => a.key.localeCompare(b.key));
+    let sorted: Member[];
+    if (blockType === 'enum') {
+        const numericValues = members.map(m => extractNumericValue(m.lines));
+        const allNumeric = numericValues.every(v => v !== null);
+        sorted = allNumeric
+            ? [...members].sort((a, b) => extractNumericValue(a.lines)! - extractNumericValue(b.lines)!)
+            : [...members].sort((a, b) => a.key.localeCompare(b.key));
+    } else {
+        sorted = [...members].sort((a, b) => a.key.localeCompare(b.key));
+    }
 
     if (blockType === 'interface') {
-        // Interface members: no comma manipulation, just reorder
+        // Interface members: no comma manipulation, just reorder + recurse into nested blocks
         const resultParts: string[] = [];
         for (const member of sorted) {
-            const memberLines = [...member.lines];
+            let memberLines = [...member.lines];
             while (memberLines.length > 0 && !memberLines[memberLines.length - 1].trim()) memberLines.pop();
+            memberLines = processNestedBlocks(memberLines);
             resultParts.push(memberLines.join('\n'));
         }
         return resultParts.join('\n');

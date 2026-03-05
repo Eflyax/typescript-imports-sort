@@ -90,10 +90,10 @@ const CSS_ORDER: string[] = [
 const CSS_ORDER_MAP = new Map<string, number>(CSS_ORDER.map((prop, idx) => [prop, idx]));
 
 interface CssDeclaration {
-    property: string;
-    value: string;
-    raw: string;       // original text including indentation
     indent: string;
+    property: string;
+    raw: string;       // original text including indentation
+    value: string;
 }
 
 function getPropertyOrder(prop: string): number {
@@ -117,6 +117,8 @@ function sortDeclarations(declarations: CssDeclaration[]): CssDeclaration[] {
  * body = content between { and } (not including the braces themselves)
  */
 function sortRuleBody(body: string): string {
+    const startsWithNewline = body.startsWith('\n');
+    const endsWithNewline = body.endsWith('\n');
     const lines = body.split('\n');
     const declarations: CssDeclaration[] = [];
     const nestedBlocks: { placeholder: string; content: string }[] = [];
@@ -194,6 +196,9 @@ function sortRuleBody(body: string): string {
     for (const nb of nestedBlocks) {
         output = output.replace(nb.placeholder, nb.content);
     }
+
+    if (startsWithNewline) output = '\n' + output;
+    if (endsWithNewline) output = output + '\n';
 
     return output;
 }
