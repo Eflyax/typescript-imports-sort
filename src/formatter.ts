@@ -63,6 +63,31 @@ function formatCss(src: string): string {
     return sortCss(src);
 }
 
+function normalizeToTabs(content: string): string {
+    const lines = content.split('\n');
+
+    // Detect indentation unit: smallest leading-space count on indented lines
+    let indentSize = 0;
+    for (const line of lines) {
+        const match = line.match(/^( +)\S/);
+        if (match) {
+            const count = match[1].length;
+            if (indentSize === 0 || count < indentSize) indentSize = count;
+        }
+    }
+
+    if (indentSize === 0) return content;
+
+    return lines.map(line => {
+        const match = line.match(/^( +)/);
+        if (!match) return line;
+        const count = match[1].length;
+        const tabCount = Math.floor(count / indentSize);
+        const remainder = count % indentSize;
+        return '\t'.repeat(tabCount) + ' '.repeat(remainder) + line.slice(count);
+    }).join('\n');
+}
+
 let result: string;
 
 switch (ext) {
@@ -81,4 +106,4 @@ switch (ext) {
         result = content;
 }
 
-process.stdout.write(result);
+process.stdout.write(normalizeToTabs(result));

@@ -16,7 +16,7 @@
  */
 
 function getAttrCategory(name: string): number {
-    if (name === 'is' || name === 'v-is') return 1;
+    if (name === 'is' || name === 'v-is' || name === ':is' || name === 'v-bind:is') return 1;
     if (name === 'v-for') return 2;
     if (['v-if', 'v-else-if', 'v-else', 'v-show', 'v-cloak'].includes(name)) return 3;
     if (name === 'v-pre' || name === 'v-once') return 4;
@@ -35,14 +35,25 @@ interface ParsedAttr {
     leading: string;
 }
 
+function attrSortKey(name: string): string {
+    return name.replace(/^[:\@#]/, '').replace(/^v-bind:/, '');
+}
+
 function sortAttrs(attrs: ParsedAttr[]): ParsedAttr[] {
     return [...attrs].sort((a, b) => {
         const catA = getAttrCategory(a.name);
         const catB = getAttrCategory(b.name);
         if (catA !== catB) return catA - catB;
-        if (catA === 8 || catA === 9) return a.name.localeCompare(b.name);
+        if (catA === 8 || catA === 9) return attrSortKey(a.name).localeCompare(attrSortKey(b.name));
         return 0;
     });
+}
+
+function getLineIndent(result: string): string {
+    const lastNewline = result.lastIndexOf('\n');
+    const lineStart = lastNewline === -1 ? 0 : lastNewline + 1;
+    const match = result.slice(lineStart).match(/^([ \t]*)/);
+    return match ? match[1] : '';
 }
 
 export function sortVueTemplateAttrs(template: string): string {
@@ -145,11 +156,30 @@ export function sortVueTemplateAttrs(template: string): string {
         }
 
         const sorted = sortAttrs(attrs);
+        const tagIndent = getLineIndent(result);
+
+        // Detect attr indentation from original leading whitespace (multi-line tags
+        // have '\n' in leading); fall back to tag indent + one level.
+        const multiLineAttr = attrs.find(a => a.leading.includes('\n'));
+        const attrIndent = multiLineAttr
+            ? multiLineAttr.leading.replace(/^[\n\r]+/, '')
+            : tagIndent + '\t';
+
         result += '<' + tagName;
-        for (const attr of sorted) {
-            result += attr.leading + attr.raw;
+
+        if (sorted.length === 0) {
+            // No attributes
+            result += trailingWs + (selfClosing ? '/>' : '>');
+        } else if (sorted.length === 1) {
+            // Single attribute → always one line
+            result += ' ' + sorted[0].raw + (selfClosing ? ' />' : '>');
+        } else {
+            // Multiple attributes → always multi-line
+            for (const attr of sorted) {
+                result += '\n' + attrIndent + attr.raw;
+            }
+            result += '\n' + tagIndent + (selfClosing ? '/>' : '>');
         }
-        result += trailingWs + (selfClosing ? '/>' : '>');
     }
 
     return result;
