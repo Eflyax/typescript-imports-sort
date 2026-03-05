@@ -9,8 +9,8 @@
  *  5  GLOBAL           – id
  *  6  UNIQUE           – ref, key (and :ref, :key, v-bind:ref, v-bind:key)
  *  7  TWO_WAY_BINDING  – v-model, v-model:*
- *  8  OTHER_DIRECTIVES – remaining v-* directives (alphabetical within category)
- *  9  OTHER_ATTR       – class, style, :attr, v-bind:*, other HTML attributes
+ *  8  OTHER_DIRECTIVES – everything not in another group (original order preserved)
+ *  9  TEST_AND_STYLES  – test-id, class, :class, style (fixed order)
  * 10  EVENTS           – @*, v-on:*
  * 11  CONTENT          – v-html, v-text
  */
@@ -25,8 +25,8 @@ function getAttrCategory(name: string): number {
     if (name === 'v-model' || name.startsWith('v-model:')) return 7;
     if (name === 'v-html' || name === 'v-text') return 11;
     if (name.startsWith('@') || name.startsWith('v-on:')) return 10;
-    if (name.startsWith('v-')) return 8;
-    return 9;
+    if (['test-id', 'class', ':class', 'style'].includes(name)) return 9;
+    return 8;
 }
 
 interface ParsedAttr {
@@ -39,14 +39,24 @@ function attrSortKey(name: string): string {
     return name.replace(/^[:\@#]/, '').replace(/^v-bind:/, '');
 }
 
+const TEST_AND_STYLES_ORDER = ['test-id', 'class', ':class', 'style'];
+
 function sortAttrs(attrs: ParsedAttr[]): ParsedAttr[] {
-    return [...attrs].sort((a, b) => {
-        const catA = getAttrCategory(a.name);
-        const catB = getAttrCategory(b.name);
+    return attrs.map((attr, idx) => ({ attr, idx })).sort((a, b) => {
+        const catA = getAttrCategory(a.attr.name);
+        const catB = getAttrCategory(b.attr.name);
         if (catA !== catB) return catA - catB;
-        if (catA === 8 || catA === 9) return attrSortKey(a.name).localeCompare(attrSortKey(b.name));
+
+        // OTHER_DIRECTIVES (8): preserve original order
+        if (catA === 8) return a.idx - b.idx;
+
+        // TEST_AND_STYLES (9): fixed order
+        if (catA === 9) {
+            return TEST_AND_STYLES_ORDER.indexOf(a.attr.name) - TEST_AND_STYLES_ORDER.indexOf(b.attr.name);
+        }
+
         return 0;
-    });
+    }).map(({ attr }) => attr);
 }
 
 function getLineIndent(result: string): string {

@@ -71,17 +71,30 @@ function itemToString(item: ImportItem): string {
     return item.alias ? `${item.name} as ${item.alias}` : item.name;
 }
 
-function sortItems(items: ImportItem[]): ImportItem[] {
-    return [...items].sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+function splitCamelCase(name: string): string[] {
+    return name.replace(/([a-z])([A-Z])/g, '$1\n$2').toLowerCase().split('\n');
 }
 
-function getGroupSortKey(imp: ParsedImport): string {
+function compareCamelCase(a: string, b: string): number {
+    const wa = splitCamelCase(a);
+    const wb = splitCamelCase(b);
+    for (let i = 0; i < Math.min(wa.length, wb.length); i++) {
+        const c = wa[i].localeCompare(wb[i]);
+        if (c !== 0) return c;
+    }
+    return wa.length - wb.length;
+}
+
+function sortItems(items: ImportItem[]): ImportItem[] {
+    return [...items].sort((a, b) => compareCamelCase(a.name, b.name));
+}
+
+function getGroupFirstName(imp: ParsedImport): string {
     if (imp.items.length === 0) return '';
     if (imp.kind === 'type-default' || imp.kind === 'default' || imp.kind === 'namespace') {
-        return imp.items[0].name.toLowerCase();
+        return imp.items[0].name;
     }
-    const sorted = sortItems(imp.items);
-    return sorted[0].name.toLowerCase();
+    return sortItems(imp.items)[0].name;
 }
 
 function formatImport(imp: ParsedImport): string {
@@ -209,7 +222,7 @@ export function sortImports(content: string): string {
     const sideEffects = parsed.filter(i => i.kind === 'sideEffect');
 
     const sortByKey = (arr: ParsedImport[]) =>
-        [...arr].sort((a, b) => getGroupSortKey(a).localeCompare(getGroupSortKey(b)));
+        [...arr].sort((a, b) => compareCamelCase(getGroupFirstName(a), getGroupFirstName(b)));
 
     const sorted = [
         ...sortByKey(destructured),
