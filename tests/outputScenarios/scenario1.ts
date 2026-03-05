@@ -1,7 +1,7 @@
 export enum Sex {
 	M = 'man',
 	W = 'woman'
- }
+	}
 
 import {aaa, AOptions, options, ZOptions} from './core/options/index';
 import {isSupportedLanguage as supLang} from './core/util/index';
