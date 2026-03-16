@@ -119,6 +119,9 @@ function sortDeclarations(declarations: CssDeclaration[]): CssDeclaration[] {
 function sortRuleBody(body: string): string {
     const startsWithNewline = body.startsWith('\n');
     const endsWithNewline = body.endsWith('\n');
+    // Preserve trailing indentation (whitespace before closing brace)
+    const trailingIndentMatch = !endsWithNewline ? body.match(/(\n\s*)$/) : null;
+    const trailingIndent = trailingIndentMatch ? trailingIndentMatch[1] : '';
     const lines = body.split('\n');
     const declarations: CssDeclaration[] = [];
     const nestedBlocks: { placeholder: string; content: string }[] = [];
@@ -149,7 +152,7 @@ function sortRuleBody(body: string): string {
                 i++;
             }
             const placeholder = `__NESTED_${nestedBlocks.length}__`;
-            nestedBlocks.push({ placeholder, content: blockLines.join('\n') });
+            nestedBlocks.push({ placeholder, content: processCssContent(blockLines.join('\n')) });
             resultLines.push(placeholder);
             continue;
         }
@@ -177,10 +180,6 @@ function sortRuleBody(body: string): string {
         i++;
     }
 
-    if (declarations.length === 0) {
-        return body;
-    }
-
     const sorted = sortDeclarations(declarations);
     const sortedLines = sorted.map(d => d.raw);
 
@@ -188,9 +187,12 @@ function sortRuleBody(body: string): string {
     // resultLines may have nested block placeholders interspersed
     // Simple approach: put sorted declarations first, then nested blocks
     const nestedPlaceholderLines = resultLines.filter(l => l.includes('__NESTED_'));
-    const otherLines = resultLines.filter(l => !l.includes('__NESTED_'));
 
-    let output = [...sortedLines, ...nestedPlaceholderLines].join('\n');
+    // Build output: declarations first, then each nested block separated by blank line
+    const parts: string[] = [];
+    if (sortedLines.length > 0) parts.push(sortedLines.join('\n'));
+    for (const placeholder of nestedPlaceholderLines) parts.push(placeholder);
+    let output = parts.join('\n\n');
 
     // Restore nested blocks
     for (const nb of nestedBlocks) {
@@ -199,6 +201,7 @@ function sortRuleBody(body: string): string {
 
     if (startsWithNewline) output = '\n' + output;
     if (endsWithNewline) output = output + '\n';
+    else if (trailingIndent) output = output + trailingIndent;
 
     return output;
 }

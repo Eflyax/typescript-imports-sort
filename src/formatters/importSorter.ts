@@ -155,34 +155,34 @@ function mergeImports(imports: ParsedImport[]): ParsedImport[] {
     return Array.from(map.values());
 }
 
-function isImportComplete(line: string): boolean {
-    // Import is complete on this line if braces are balanced (or there are none)
+function isBracesComplete(line: string): boolean {
     const open = (line.match(/\{/g) || []).length;
     const close = (line.match(/\}/g) || []).length;
     return open === close;
 }
 
-function extractImportBlocks(content: string): Array<{ raw: string; lineStart: number; lineEnd: number }> {
+function extractStatementBlocks(
+    content: string,
+    startPredicate: (trimmed: string) => boolean
+): Array<{ raw: string; lineStart: number; lineEnd: number }> {
     const lines = content.split('\n');
     const results: Array<{ raw: string; lineStart: number; lineEnd: number }> = [];
     let i = 0;
 
     while (i < lines.length) {
         const trimmed = lines[i].trimStart();
-        if (trimmed.startsWith('import ') || trimmed === 'import') {
+        if (startPredicate(trimmed)) {
             const startLine = i;
-            const importLines = [lines[i]];
+            const stmtLines = [lines[i]];
 
-            if (isImportComplete(lines[i])) {
-                // Single-line or already-closed import (with or without semicolon)
-                results.push({ raw: importLines.join('\n'), lineStart: startLine, lineEnd: i });
+            if (isBracesComplete(lines[i])) {
+                results.push({ raw: stmtLines.join('\n'), lineStart: startLine, lineEnd: i });
             } else {
-                // Multi-line import: scan until balanced braces + semicolon
                 let found = false;
                 i++;
                 while (i < lines.length) {
-                    importLines.push(lines[i]);
-                    const fullSoFar = importLines.join('\n');
+                    stmtLines.push(lines[i]);
+                    const fullSoFar = stmtLines.join('\n');
                     const open = (fullSoFar.match(/\{/g) || []).length;
                     const close = (fullSoFar.match(/\}/g) || []).length;
                     if (open === close && fullSoFar.includes(';')) {
@@ -192,15 +192,129 @@ function extractImportBlocks(content: string): Array<{ raw: string; lineStart: n
                     }
                     i++;
                 }
-                if (!found) {
-                    i--;
-                }
+                if (!found) i--;
             }
         }
         i++;
     }
 
     return results;
+}
+
+function extractImportBlocks(content: string): Array<{ raw: string; lineStart: number; lineEnd: number }> {
+    return extractStatementBlocks(content, t => t.startsWith('import ') || t === 'import');
+}
+
+function extractExportBlocks(content: string): Array<{ raw: string; lineStart: number; lineEnd: number }> {
+    return extractStatementBlocks(content, t =>
+        t.startsWith('export {') ||
+        t.startsWith('export * ') ||
+        t.startsWith('export *;') ||
+        t.startsWith('export type {')
+    );
+}
+
+function parseExportStatement(raw: string): ParsedImport | null {
+    const text = raw.replace(/\s+/g, ' ').trim();
+
+    // export * from '...'
+    const starMatch = text.match(/^export\s+\*\s+from\s+['"]([^'"]+)['"]\s*;?$/);
+    if (starMatch) {
+        return { kind: 'sideEffect', items: [], source: starMatch[1], raw };
+    }
+
+    // export * as X from '...'
+    const namespaceMatch = text.match(/^export\s+\*\s+as\s+(\w+)\s+from\s+['"]([^'"]+)['"]\s*;?$/);
+    if (namespaceMatch) {
+        return { kind: 'namespace', items: [{ name: namespaceMatch[1] }], source: namespaceMatch[2], raw };
+    }
+
+    // export type { ... } from '...'
+    const typeMatch = text.match(/^export\s+type\s+\{([^}]*)\}\s+from\s+['"]([^'"]+)['"]\s*;?$/);
+    if (typeMatch) {
+        const items = parseDestructuredItems(typeMatch[1]);
+        return { kind: 'type', items, source: typeMatch[2], raw };
+    }
+
+    // export { ... } from '...'
+    const destructuredMatch = text.match(/^export\s+\{([^}]*)\}\s+from\s+['"]([^'"]+)['"]\s*;?$/);
+    if (destructuredMatch) {
+        const items = parseDestructuredItems(destructuredMatch[1]);
+        return { kind: 'destructured', items, source: destructuredMatch[2], raw };
+    }
+
+    return null;
+}
+
+function formatExport(imp: ParsedImport): string {
+    const LINE_LENGTH_LIMIT = 90;
+
+    if (imp.kind === 'sideEffect') {
+        return `export * from '${imp.source}';`;
+    }
+
+    if (imp.kind === 'namespace') {
+        return `export * as ${imp.items[0].name} from '${imp.source}';`;
+    }
+
+    // destructured or type
+    const sorted = sortItems(imp.items);
+    const prefix = imp.kind === 'type' ? 'export type ' : 'export ';
+    const itemsStr = sorted.map(itemToString).join(', ');
+    const singleLine = `${prefix}{${itemsStr}} from '${imp.source}';`;
+
+    if (singleLine.length <= LINE_LENGTH_LIMIT) {
+        return singleLine;
+    }
+
+    const itemLines = sorted.map((item, idx) =>
+        idx < sorted.length - 1 ? `\t${itemToString(item)},` : `\t${itemToString(item)}`
+    ).join('\n');
+    return `${prefix}{\n${itemLines}\n} from '${imp.source}';`;
+}
+
+export function sortExports(content: string): string {
+    const blocks = extractExportBlocks(content);
+    if (blocks.length === 0) return content;
+
+    const parsed: ParsedImport[] = [];
+    for (const block of blocks) {
+        const exp = parseExportStatement(block.raw);
+        if (exp) parsed.push(exp);
+    }
+
+    if (parsed.length === 0) return content;
+
+    const destructured = mergeImports(parsed.filter(i => i.kind === 'destructured'));
+    const namespaces = mergeImports(parsed.filter(i => i.kind === 'namespace'));
+    const types = mergeImports(parsed.filter(i => i.kind === 'type'));
+    const stars = parsed.filter(i => i.kind === 'sideEffect');
+
+    const sortByKey = (arr: ParsedImport[]) =>
+        [...arr].sort((a, b) => compareCamelCase(getGroupFirstName(a), getGroupFirstName(b)));
+
+    const sorted = [
+        ...sortByKey(destructured),
+        ...sortByKey(namespaces),
+        ...sortByKey(types),
+        ...stars,
+    ];
+
+    const newExportBlock = sorted.map(formatExport).join('\n');
+
+    const firstLine = blocks[0].lineStart;
+    const lastLine = blocks[blocks.length - 1].lineEnd;
+
+    const lines = content.split('\n');
+    const before = lines.slice(0, firstLine).join('\n');
+    const after = lines.slice(lastLine + 1).join('\n');
+
+    const parts: string[] = [];
+    if (firstLine > 0) parts.push(before);
+    parts.push(newExportBlock);
+    if (lastLine < lines.length - 1) parts.push(after);
+
+    return parts.join('\n');
 }
 
 export function sortImports(content: string): string {

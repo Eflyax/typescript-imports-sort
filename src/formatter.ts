@@ -1,6 +1,6 @@
 import {sortBlocks} from './formatters/blockSorter';
 import {sortCss} from './formatters/cssSorter';
-import {sortImports} from './formatters/importSorter';
+import {sortExports, sortImports} from './formatters/importSorter';
 import {sortVueComponents} from './formatters/vueComponentsSorter';
 import {sortVueTemplateAttrs} from './formatters/vueAttrSorter';
 import * as fs from 'fs';
@@ -39,6 +39,7 @@ function formatVue(src: string): string {
     if (scriptMatch) {
         let scriptContent = scriptMatch[2];
         scriptContent = sortImports(scriptContent);
+        scriptContent = sortExports(scriptContent);
         scriptContent = sortBlocks(scriptContent);
         scriptContent = sortVueComponents(scriptContent);
         src = src.replace(scriptMatch[0], `${scriptMatch[1]}${scriptContent}${scriptMatch[3]}`);
@@ -55,6 +56,7 @@ function formatVue(src: string): string {
 
 function formatTs(src: string): string {
     src = sortImports(src);
+    src = sortExports(src);
     src = sortBlocks(src);
     return src;
 }
