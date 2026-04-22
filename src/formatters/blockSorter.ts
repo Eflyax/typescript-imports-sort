@@ -2,6 +2,24 @@
  * Phase 2: Sort interface and enum members alphabetically.
  */
 
+function splitCamelCase(name: string): string[] {
+    return name
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1\n$2')
+        .replace(/([a-z])([A-Z])/g, '$1\n$2')
+        .toLowerCase()
+        .split('\n');
+}
+
+function compareCamelCase(a: string, b: string): number {
+    const wa = splitCamelCase(a);
+    const wb = splitCamelCase(b);
+    for (let i = 0; i < Math.min(wa.length, wb.length); i++) {
+        const c = wa[i].localeCompare(wb[i]);
+        if (c !== 0) return c;
+    }
+    return wa.length - wb.length;
+}
+
 interface Member {
     hasComma: boolean;
     key: string;
@@ -12,8 +30,8 @@ function extractMemberKey(lines: string[]): string {
     for (const line of lines) {
         const trimmed = line.trim();
         if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) continue;
-        const match = trimmed.match(/^([A-Za-z_$][A-Za-z0-9_$?]*)/);
-        return match ? match[1].toLowerCase() : trimmed.toLowerCase();
+        const match = trimmed.match(/^([A-Za-z_$][A-Za-z0-9_$]*)/);
+        return match ? match[1] : trimmed;
     }
     return '';
 }
@@ -140,9 +158,9 @@ function sortAndRebuildBody(body: string, blockType: 'interface' | 'enum'): stri
         const allNumeric = numericValues.every(v => v !== null);
         sorted = allNumeric
             ? [...members].sort((a, b) => extractNumericValue(a.lines)! - extractNumericValue(b.lines)!)
-            : [...members].sort((a, b) => a.key.localeCompare(b.key));
+            : [...members].sort((a, b) => compareCamelCase(a.key, b.key));
     } else {
-        sorted = [...members].sort((a, b) => a.key.localeCompare(b.key));
+        sorted = [...members].sort((a, b) => compareCamelCase(a.key, b.key));
     }
 
     if (blockType === 'interface') {

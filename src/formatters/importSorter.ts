@@ -72,7 +72,11 @@ function itemToString(item: ImportItem): string {
 }
 
 function splitCamelCase(name: string): string[] {
-    return name.replace(/([a-z])([A-Z])/g, '$1\n$2').toLowerCase().split('\n');
+    return name
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1\n$2')
+        .replace(/([a-z])([A-Z])/g, '$1\n$2')
+        .toLowerCase()
+        .split('\n');
 }
 
 function compareCamelCase(a: string, b: string): number {
@@ -293,11 +297,17 @@ export function sortExports(content: string): string {
     const sortByKey = (arr: ParsedImport[]) =>
         [...arr].sort((a, b) => compareCamelCase(getGroupFirstName(a), getGroupFirstName(b)));
 
+    const sortedStars = [...stars].sort((a, b) => {
+        const nameA = a.source.split('/').pop() ?? a.source;
+        const nameB = b.source.split('/').pop() ?? b.source;
+        return compareCamelCase(nameA, nameB);
+    });
+
     const sorted = [
         ...sortByKey(destructured),
         ...sortByKey(namespaces),
         ...sortByKey(types),
-        ...stars,
+        ...sortedStars,
     ];
 
     const newExportBlock = sorted.map(formatExport).join('\n');

@@ -3,7 +3,7 @@ export enum Sex {
 	W = 'woman'
 	}
 
-import {aaa, AOptions, options, ZOptions} from './core/options/index';
+import {AOptions, aaa, options, ZOptions} from './core/options/index';
 import {isSupportedLanguage as supLang} from './core/util/index';
 import {NButton, NCheckbox, NForm, NFormItem, NInput} from 'naive-ui';
 import {sortInsideEditor, sortOnSave, sortZ} from './core/sort/index';

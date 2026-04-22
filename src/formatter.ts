@@ -1,6 +1,7 @@
 import {sortBlocks} from './formatters/blockSorter';
 import {sortCss} from './formatters/cssSorter';
 import {sortExports, sortImports} from './formatters/importSorter';
+import {sortJson} from './formatters/jsonSorter';
 import {sortVueComponents} from './formatters/vueComponentsSorter';
 import {sortVueTemplateAttrs} from './formatters/vueAttrSorter';
 import * as fs from 'fs';
@@ -103,6 +104,9 @@ switch (ext) {
     case '.css':
     case '.scss':
         result = formatCss(content);
+        break;
+    case '.json':
+        result = sortJson(content);
         break;
     default:
         result = content;

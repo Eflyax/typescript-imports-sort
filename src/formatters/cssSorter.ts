@@ -124,6 +124,7 @@ function sortRuleBody(body: string): string {
     const trailingIndent = trailingIndentMatch ? trailingIndentMatch[1] : '';
     const lines = body.split('\n');
     const declarations: CssDeclaration[] = [];
+    const includeLines: string[] = [];
     const nestedBlocks: { placeholder: string; content: string }[] = [];
     let i = 0;
     const resultLines: string[] = [];
@@ -134,16 +135,23 @@ function sortRuleBody(body: string): string {
         const trimmed = line.trim();
 
         if (!trimmed) {
-            // skip blank lines — will be handled via structure
+            // Preserve blank lines in resultLines (between nested blocks / directives)
+            resultLines.push(line);
             i++;
             continue;
         }
 
         // Check if this starts a nested block (SCSS nesting, @media inside rule, etc.)
         if (trimmed.endsWith('{') || (trimmed.includes('{') && !trimmed.includes(':'))) {
+            // Collect any multi-line selector prefix lines (ending with ',') from resultLines
+            const selectorPrefix: string[] = [];
+            while (resultLines.length > 0 && resultLines[resultLines.length - 1].trim().endsWith(',')) {
+                selectorPrefix.unshift(resultLines.pop()!);
+            }
+
             // Nested block — find its end
             let depth = (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
-            const blockLines = [line];
+            const blockLines = [...selectorPrefix, line];
             i++;
             while (i < lines.length && depth > 0) {
                 depth += (lines[i].match(/\{/g) || []).length;
@@ -154,6 +162,18 @@ function sortRuleBody(body: string): string {
             const placeholder = `__NESTED_${nestedBlocks.length}__`;
             nestedBlocks.push({ placeholder, content: processCssContent(blockLines.join('\n')) });
             resultLines.push(placeholder);
+            continue;
+        }
+
+        // @include directive — hoist to block start
+        if (trimmed.startsWith('@include')) {
+            let raw = line;
+            while (!raw.trimEnd().endsWith(';') && !raw.trimEnd().endsWith('}') && i + 1 < lines.length) {
+                i++;
+                raw += '\n' + lines[i];
+            }
+            includeLines.push(raw);
+            i++;
             continue;
         }
 
@@ -183,15 +203,16 @@ function sortRuleBody(body: string): string {
     const sorted = sortDeclarations(declarations);
     const sortedLines = sorted.map(d => d.raw);
 
-    // Now rebuild: replace declaration area in resultLines with sorted declarations
-    // resultLines may have nested block placeholders interspersed
-    // Simple approach: put sorted declarations first, then nested blocks
-    const nestedPlaceholderLines = resultLines.filter(l => l.includes('__NESTED_'));
+    // Build output: sorted declarations first, then all other lines (nested blocks,
+    // @include/@apply/@extend directives, comments, etc.) in their original relative order
+    // Strip leading/trailing blank lines from resultLines to avoid double-blanks at join boundary
+    while (resultLines.length > 0 && !resultLines[0].trim()) resultLines.shift();
+    while (resultLines.length > 0 && !resultLines[resultLines.length - 1].trim()) resultLines.pop();
 
-    // Build output: declarations first, then each nested block separated by blank line
     const parts: string[] = [];
+    if (includeLines.length > 0) parts.push(includeLines.join('\n'));
     if (sortedLines.length > 0) parts.push(sortedLines.join('\n'));
-    for (const placeholder of nestedPlaceholderLines) parts.push(placeholder);
+    if (resultLines.length > 0) parts.push(resultLines.join('\n'));
     let output = parts.join('\n\n');
 
     // Restore nested blocks
