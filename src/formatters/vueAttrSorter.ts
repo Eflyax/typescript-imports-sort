@@ -25,7 +25,7 @@ function getAttrCategory(name: string): number {
     if (name === 'v-model' || name.startsWith('v-model:')) return 7;
     if (name === 'v-html' || name === 'v-text') return 11;
     if (name.startsWith('@') || name.startsWith('v-on:')) return 10;
-    if (['test-id', 'class', ':class', 'style'].includes(name)) return 9;
+    if (['test-id', ':test-id', 'class', ':class', 'style', ':style'].includes(name)) return 9;
     return 8;
 }
 
@@ -39,7 +39,7 @@ function attrSortKey(name: string): string {
     return name.replace(/^[:\@#]/, '').replace(/^v-bind:/, '');
 }
 
-const TEST_AND_STYLES_ORDER = ['test-id', 'class', ':class', 'style'];
+const TEST_AND_STYLES_ORDER = ['test-id', ':test-id', 'class', ':class', 'style', ':style'];
 
 function sortAttrs(attrs: ParsedAttr[]): ParsedAttr[] {
     return attrs.map((attr, idx) => ({ attr, idx })).sort((a, b) => {
