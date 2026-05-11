@@ -1,3 +1,4 @@
+import {formatArrayObjects} from './formatters/arrayObjectFormatter';
 import {sortBlocks} from './formatters/blockSorter';
 import {sortCss} from './formatters/cssSorter';
 import {sortExports, sortImports} from './formatters/importSorter';
@@ -43,6 +44,7 @@ function formatVue(src: string): string {
         scriptContent = sortExports(scriptContent);
         scriptContent = sortBlocks(scriptContent);
         scriptContent = sortVueComponents(scriptContent);
+        scriptContent = formatArrayObjects(scriptContent);
         src = src.replace(scriptMatch[0], `${scriptMatch[1]}${scriptContent}${scriptMatch[3]}`);
     }
 
@@ -59,6 +61,7 @@ function formatTs(src: string): string {
     src = sortImports(src);
     src = sortExports(src);
     src = sortBlocks(src);
+    src = formatArrayObjects(src);
     return src;
 }
 
