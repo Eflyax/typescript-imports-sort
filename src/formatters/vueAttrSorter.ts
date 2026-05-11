@@ -192,5 +192,31 @@ export function sortVueTemplateAttrs(template: string): string {
         }
     }
 
+    // When a multi-line tag closes with `\n<indent>>` and inline text follows on the same
+    // line before the closing tag, expand to three lines so content is properly indented.
+    result = result.replace(
+        /\n([\t ]*)>([^\n<\/][^\n]*)(<\/[\w:-]+>)/g,
+        (_match, indent, content, closing) => {
+            const trimmed = content.trim();
+            if (!trimmed) {
+                return `\n${indent}>${closing}`;
+            }
+            return `\n${indent}>\n${indent}\t${trimmed}\n${indent}${closing}`;
+        }
+    );
+
+    // When a single-line tag (with at least one attribute) has inline text content,
+    // expand it: <tag attr>text</tag> → <tag attr>\n<indent+1>text\n<indent></tag>
+    result = result.replace(
+        /^([\t ]*)(<[\w:-]+\s[^>]*>)([^\n<\/][^\n]*)(<\/[\w:-]+>)$/gm,
+        (_match, indent, openTag, content, closing) => {
+            const trimmed = content.trim();
+            if (!trimmed) {
+                return _match;
+            }
+            return `${indent}${openTag}\n${indent}\t${trimmed}\n${indent}${closing}`;
+        }
+    );
+
     return result;
 }
