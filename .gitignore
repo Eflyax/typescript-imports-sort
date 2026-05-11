@@ -5,3 +5,5 @@ node_modules
 npm-debug.log
 out
 src/**/*.js
+docs/*
+CLAUDE.md
