@@ -6,6 +6,7 @@ import { sortCss } from '../src/formatters/cssSorter';
 import { sortImports } from '../src/formatters/importSorter';
 import { sortVueTemplateAttrs } from '../src/formatters/vueAttrSorter';
 import { sortVueComponents } from '../src/formatters/vueComponentsSorter';
+import { formatArrayObjects } from '../src/formatters/arrayObjectFormatter';
 
 function normalizeToTabs(content: string): string {
     const lines = content.split('\n');
@@ -31,6 +32,7 @@ function normalizeToTabs(content: string): string {
 function formatTs(src: string): string {
     src = sortImports(src);
     src = sortBlocks(src);
+    src = formatArrayObjects(src);
     return normalizeToTabs(src);
 }
 
@@ -47,6 +49,7 @@ function formatVue(src: string): string {
         scriptContent = sortImports(scriptContent);
         scriptContent = sortBlocks(scriptContent);
         scriptContent = sortVueComponents(scriptContent);
+        scriptContent = formatArrayObjects(scriptContent);
         src = src.replace(scriptMatch[0], `${scriptMatch[1]}${scriptContent}${scriptMatch[3]}`);
     }
 
