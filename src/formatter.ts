@@ -1,6 +1,7 @@
 import {formatArrayObjects} from './formatters/arrayObjectFormatter';
 import {sortBlocks} from './formatters/blockSorter';
 import {sortCss} from './formatters/cssSorter';
+import {isExcluded} from './formatters/exclusionFilter';
 import {sortExports, sortImports} from './formatters/importSorter';
 import {sortJson} from './formatters/jsonSorter';
 import {sortVueComponents} from './formatters/vueComponentsSorter';
@@ -28,6 +29,11 @@ if (stdin) {
         process.stderr.write(`Cannot read file: ${filePath}\n`);
         process.exit(1);
     }
+}
+
+if (isExcluded(filePath)) {
+    process.stdout.write(content);
+    process.exit(0);
 }
 
 function formatVue(src: string): string {
