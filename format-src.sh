@@ -19,10 +19,15 @@ if [ ! -d "$SRC_DIR" ]; then
     exit 1
 fi
 
-files=()
+all_files=()
 while IFS= read -r -d '' file; do
-    files+=("$file")
+    all_files+=("$file")
 done < <(find "$SRC_DIR" -type f \( -name "*.ts" -o -name "*.js" -o -name "*.vue" -o -name "*.scss" \) -print0)
+
+files=()
+while IFS= read -r file; do
+    [[ -n "$file" ]] && files+=("$file")
+done < <(printf '%s\n' "${all_files[@]}" | "$FORMATTER_ROOT/node_modules/.bin/tsx" "$FORMATTER_ROOT/src/filterExcluded.ts" 2>/dev/null)
 total=${#files[@]}
 
 echo "Formatting $total file(s) in $SRC_DIR..."
