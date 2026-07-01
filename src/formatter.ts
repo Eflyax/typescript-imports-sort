@@ -54,6 +54,10 @@ function formatVue(src: string): string {
         src = src.replace(styleMatch[0], `${styleMatch[1]}${sortedStyle}${styleMatch[3]}`);
     }
 
+    src = src.replace(/(<\/template>)\s*\n\s*(<script)/g, '$1\n\n$2');
+    src = src.replace(/(<script[^>]*\/>)\s*\n\s*(<style)/g, '$1\n$2');
+    src = src.replace(/(<\/script>)\s*\n\s*(<style)/g, '$1\n$2');
+
     return src;
 }
 

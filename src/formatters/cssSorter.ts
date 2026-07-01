@@ -33,7 +33,7 @@ const CSS_ORDER: string[] = [
     "column-gap", "column-rule", "column-rule-color", "column-rule-style",
     "column-rule-width", "column-span", "column-width", "columns", "content",
     "counter-increment", "counter-reset", "cursor", "direction", "display",
-    "empty-cells", "filter", "flex", "flex-basis", "flex-direction", "flex-flow",
+    "empty-cells", "fill", "filter", "flex", "flex-basis", "flex-direction", "flex-flow",
     "flex-grow", "flex-shrink", "flex-wrap", "float", "font", "@font-face",
     "font-family", "font-feature-settings", "@font-feature-values", "font-kerning",
     "font-language-override", "font-size", "font-size-adjust", "font-stretch",
