@@ -1,0 +1,10 @@
+{
+	"name": "tis-formatter-server",
+	"private": true,
+	"scripts": {
+		"build": "esbuild src/server.ts --bundle --platform=node --format=cjs --outfile=dist/server.js"
+	},
+	"devDependencies": {
+		"esbuild": "^0.23.0"
+	}
+}
