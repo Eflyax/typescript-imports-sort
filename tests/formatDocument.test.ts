@@ -24,6 +24,13 @@ describe('formatDocument', () => {
 		expect(formatDocument('hello\n', '/x/file.md')).toBe('hello\n');
 	});
 
+	it('sorts imports and keeps JSX intact for a .tsx file', () => {
+		const input = "import b from 'b';\nimport a from 'a';\n\nconst x = <div className=\"a\" />;\n";
+		const out = formatDocument(input, '/x/App.tsx');
+		expect(out.indexOf("from 'a'")).toBeLessThan(out.indexOf("from 'b'"));
+		expect(out).toContain('const x = <div className="a" />;');
+	});
+
 	it('preserves two separate <style> blocks in Vue SFC (regression: greedy regex)', () => {
 		const input = `<template><div>test</div></template>
 <style scoped>

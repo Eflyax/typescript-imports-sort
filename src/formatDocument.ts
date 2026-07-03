@@ -84,7 +84,9 @@ export function formatDocument(text: string, filePath: string): string {
 			result = formatVue(text);
 			break;
 		case '.ts':
+		case '.tsx':
 		case '.js':
+		case '.jsx':
 			result = formatTs(text);
 			break;
 		case '.css':

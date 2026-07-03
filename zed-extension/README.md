@@ -10,6 +10,11 @@ remote SSH.
   (`rustup target add wasm32-wasip1`). Zed compiles the dev extension on install.
 - **Node:** provided by Zed's managed runtime — no manual install, including on
   remote hosts.
+- **Vue.js / SCSS language extensions:** the `Vue.js` and `SCSS` per-language
+  `formatter` entries only take effect if Zed already knows a language by that
+  name, which requires the corresponding Zed language extension to be
+  installed. Without them, `.vue` / `.scss` files fall back to Zed's default
+  formatter (or none) instead of this one.
 
 ## Build the server bundle
 
@@ -42,3 +47,10 @@ Full-document formatting only. On format it replaces the whole buffer with the
 sorted/normalised output (tabs). `package.json` is special-cased: top-level key
 order is preserved and only `dependencies` / `devDependencies` /
 `peerDependencies` values are sorted.
+
+**JSON caveat:** with `"format_on_save": "on"` set for the `JSON` language,
+every `.json` file is formatted on save — and outside of `package.json`, that
+means top-level keys are re-sorted too. If you have `.json` files whose key
+order is intentional (fixtures, ordered config, etc.), scope JSON formatting
+per-project (e.g. via `.zed/settings.json` or a narrower file glob) rather
+than enabling it globally.

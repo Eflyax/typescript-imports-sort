@@ -1464,7 +1464,9 @@ function formatDocument(text, filePath) {
       result = formatVue(text);
       break;
     case ".ts":
+    case ".tsx":
     case ".js":
+    case ".jsx":
       result = formatTs(text);
       break;
     case ".css":
