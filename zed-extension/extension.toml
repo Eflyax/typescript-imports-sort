@@ -1,0 +1,11 @@
+id = "tis-formatter"
+name = "TIS Formatter"
+version = "0.0.1"
+schema_version = 1
+authors = ["Jakub Záruba <j.zaruba93@gmail.com>"]
+description = "Very specific TypeScript/Vue/CSS/JSON import & block formatter"
+repository = "https://github.com/eflyax/typescript-imports-sort"
+
+[language_servers.tis-formatter]
+name = "TIS Formatter"
+languages = ["TypeScript", "TSX", "JavaScript", "Vue.js", "SCSS", "CSS", "JSON"]
