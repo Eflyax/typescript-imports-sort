@@ -25,7 +25,7 @@ function formatVue(src: string): string {
 		src = src.replace(scriptMatch[0], `${scriptMatch[1]}${scriptContent}${scriptMatch[3]}`);
 	}
 
-	const styleMatch = src.match(/(<style[^>]*>)([\s\S]*)(<\/style>)/);
+	const styleMatch = src.match(/(<style[^>]*>)([\s\S]*?)(<\/style>)/);
 	if (styleMatch) {
 		const sortedStyle = sortCss(styleMatch[2]);
 		src = src.replace(styleMatch[0], `${styleMatch[1]}${sortedStyle}${styleMatch[3]}`);

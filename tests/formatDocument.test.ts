@@ -23,4 +23,21 @@ describe('formatDocument', () => {
 	it('returns unknown extensions unchanged', () => {
 		expect(formatDocument('hello\n', '/x/file.md')).toBe('hello\n');
 	});
+
+	it('preserves two separate <style> blocks in Vue SFC (regression: greedy regex)', () => {
+		const input = `<template><div>test</div></template>
+<style scoped>
+.a { color: red; }
+</style>
+<style>
+.b { color: blue; }
+</style>`;
+		const output = formatDocument(input, '/x/comp.vue');
+		const styleMatches = output.match(/<style/g);
+		const closeMatches = output.match(/<\/style>/g);
+		expect(styleMatches).toHaveLength(2);
+		expect(closeMatches).toHaveLength(2);
+		expect(output).toContain('.a { color: red; }');
+		expect(output).toContain('.b { color: blue; }');
+	});
 });
