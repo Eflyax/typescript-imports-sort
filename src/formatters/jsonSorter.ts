@@ -46,6 +46,27 @@ function sortJsonValue(value: unknown): unknown {
     return value;
 }
 
+// package.json: keep top-level key order intact, sort only the values of these blocks.
+const PACKAGE_JSON_SORT_KEYS = ['dependencies', 'devDependencies', 'peerDependencies'];
+
+function sortPackageJson(value: unknown): unknown {
+    if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+        return value;
+    }
+    const obj = value as Record<string, unknown>;
+    const result: Record<string, unknown> = {};
+    for (const key of Object.keys(obj)) {
+        const child = obj[key];
+        const isSortable = child !== null && typeof child === 'object' && !Array.isArray(child);
+        if (PACKAGE_JSON_SORT_KEYS.includes(key) && isSortable) {
+            result[key] = sortJsonValue(child);
+        } else {
+            result[key] = child;
+        }
+    }
+    return result;
+}
+
 function detectIndent(content: string): string | number {
     const match = content.match(/\{\s*\n([ \t]+)/);
     if (!match) return '\t';
@@ -54,7 +75,7 @@ function detectIndent(content: string): string | number {
     return indent.length;
 }
 
-export function sortJson(content: string): string {
+export function sortJson(content: string, fileName?: string): string {
     let parsed: unknown;
     try {
         parsed = JSON.parse(content);
@@ -62,8 +83,10 @@ export function sortJson(content: string): string {
         return content;
     }
 
+    const isPackageJson = fileName !== undefined
+        && fileName.replace(/\\/g, '/').split('/').pop() === 'package.json';
     const indent = detectIndent(content);
-    const sorted = sortJsonValue(parsed);
+    const sorted = isPackageJson ? sortPackageJson(parsed) : sortJsonValue(parsed);
     const result = JSON.stringify(sorted, null, indent);
     // Preserve trailing newline if original had one
     return content.endsWith('\n') ? result + '\n' : result;

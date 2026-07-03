@@ -113,7 +113,7 @@ switch (ext) {
         result = formatCss(content);
         break;
     case '.json':
-        result = sortJson(content);
+        result = sortJson(content, filePath);
         break;
     default:
         result = content;
